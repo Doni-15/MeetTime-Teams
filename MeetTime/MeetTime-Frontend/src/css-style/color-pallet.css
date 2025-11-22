@@ -10,7 +10,7 @@
     --color-primary: oklch(51% 0.262 276.966);
     --color-primary-content: oklch(96% 0.018 272.314);
     --color-secondary: oklch(64% 0.2 131.684);
-    --color-secondary-content: oklch(98% 0.031 120.757);
+    --color-secondary-content: rgb(245, 252, 229);
     --color-accent-content: oklch(98% 0.018 155.826);
     --color-neutral: oklch(42% 0.199 265.638);
     --color-neutral-content: oklch(97% 0.014 254.604);
@@ -19,28 +19,33 @@
     --color-success: oklch(62% 0.194 149.214);
     --color-success-hover: oklch(46.023% 0.13372 147.868);
     --color-success-content: oklch(98% 0.018 155.826);
-    --color-warning: oklch(68% 0.162 75.834);
-    --color-warning-content: oklch(98% 0.026 102.212);
-    --color-error: oklch(58% 0.253 17.585);
+    --color-warning: oklch(69.081% 0.20733 42.27);
+    --color-warning-content: oklch(79.268% 0.17097 70.665);
+    --color-error: oklch(55.398% 0.22734 29.223);
     --color-error-content: oklch(96% 0.015 12.422);
-    --warna_footer_t2: oklch(21.726% 0.0558 255.133);
 
     --color-text: oklch(78% 0.115 274.713);
 }
 
 header,
-footer section:first-child {
+footer {
     background: var(--warna-utama);
     color: var(--color-text);
     overflow: hidden;
 }
 
-footer section:last-child {
-    color: var(--color-text);
-    background: var(--warna_footer_t2);
-    overflow: hidden;
+main {
+    background: var(--color-base-400);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
-main {
-    background: var(--color-base-100);
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

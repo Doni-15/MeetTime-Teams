@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { MainLayout } from "@/components";
 import { SignIn, SignUp, Dashboard } from "@/pages";
 
@@ -13,6 +13,8 @@ function App() {
 
           <Route path="/auntifikasi/sign-in" element={<SignIn />} />
           <Route path="/auntifikasi/sign-up" element={<SignUp />} />
+
+          <Route path="/" element={<Navigate to="/pages/dashboard" replace />} />
         </Routes>
       </Router>
     </>

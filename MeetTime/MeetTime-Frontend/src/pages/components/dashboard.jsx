@@ -1,9 +1,20 @@
+import { AksiCepat, ListGroup, CaraKerja, JadwalSaya } from '@/components';
+
 export function Dashboard() {
     return(
         <>
-            <p>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam sed error doloremque laudantium eveniet, temporibus cum odio sit debitis officia libero possimus rem rerum. Voluptates sequi ad corrupti quia aspernatur.
-            </p>
+            <div className="bg-[var(--warna-netral-abu)] mx-10 pt-5 pb-8 px-5 rounded-xl">
+                <h1 className="text-4xl font-bold mb-5">Dashboard</h1>
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5">
+                    <AksiCepat />
+                    <ListGroup />
+                    <CaraKerja />
+                </div>
+                <div className="mt-10">
+                    <JadwalSaya />
+                </div>
+            </div>
         </>
     );
 }
+
