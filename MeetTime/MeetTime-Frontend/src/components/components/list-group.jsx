@@ -1,4 +1,4 @@
-import { ArrowRightIcon } from '@heroicons/react/24/outline'
+import { ArrowRightIcon, UserGroupIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
 import { DataGroup } from '@/components'
 
@@ -8,7 +8,7 @@ export function ListGroup() {
             <section className="bg-[var(--warna-netral-putih)] px-5 pt-3 pb-10 rounded-xl">
                 <div className="flex justify-between items-center text-black">
                     <h1 className="font-semibold text-xl">Group Saya</h1>
-                    <h1 className="font-extrabold text-3xl">+</h1>                   
+                    <UserGroupIcon className="size-8" />                  
                 </div>
                 <section className='overflow-y-auto max-h-[45vh] hide-scrollbar'>
                     {DataGroup.map((item) => (

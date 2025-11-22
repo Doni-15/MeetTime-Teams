@@ -1,3 +1,4 @@
+import { ExclamationCircleIcon } from '@heroicons/react/24/outline'
 import { CaraKerjaData } from "@/components";
 
 export function CaraKerja() {
@@ -6,7 +7,7 @@ export function CaraKerja() {
             <section className="bg-[var(--color-warning-content)] px-5 pt-3 pb-10 rounded-xl">
                 <div className="flex justify-between items-center text-black">
                     <h1 className="font-semibold text-xl">Bagaimana cara kerjanya?</h1>
-                    <h1 className="font-extrabold text-3xl">+</h1>                   
+                    <ExclamationCircleIcon className="size-8 text-orange-700" />                 
                 </div>
                 <section className='max-h-[45vh] mt-1'>
                     {CaraKerjaData.map((item) => (
