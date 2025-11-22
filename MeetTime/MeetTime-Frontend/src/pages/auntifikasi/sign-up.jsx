@@ -11,10 +11,10 @@ export function SignUp(){
                     <div className="w-1/2 rounded-l-4xl py-10 px-8 bg-[var(--warna-netral-abu)]">
                         <h1 className="text-5xl font-bold tracking-wider mb-8">REGISTRASI</h1>
                         <form action="" className='flex flex-col gap-5'>
-                            <InputBox type="text" placeholder="Nama Lengkap"/>
-                            <InputBox type="email" placeholder="usaha@gmail.com"/>
-                            <InputBox type="password" placeholder="Buat Password Kuat"/>
-                            <InputBox type="password" placeholder="Konfirmasi Password"/>
+                            <InputBox type="text" placeholder="Ex: Doni Simamora" judul="Nama Lengkap"/>
+                            <InputBox type="text" placeholder="Ex: 1234567890" judul="NIM"/>
+                            <InputBox type="password" placeholder="Masukkan Passwword" judul="Password"/>
+                            <InputBox type="password" placeholder="Konfirmasi Password" judul="Konfirmasi Password"/>
                         </form>
 
                         <div className='mt-10'>
@@ -24,8 +24,8 @@ export function SignUp(){
                         </div>
                     </div>
                     <div className="w-1/2 rounded-r-4xl p-6 bg-[var(--warna-utama)] text-[var(--warna-netral-abu)] flex flex-col items-center justify-center">
-                        <div className="text-3xl font-bold tracking-wider">Belum Memiliki Akun?</div>
-                        <div className="text-xl font-semibold mt-2">Sign Up Untuk Memulai</div>
+                        <div className="text-3xl font-bold tracking-wider">Sudah Memiliki Akun?</div>
+                        <div className="text-xl font-semibold mt-2">Sign In Untuk Masuk</div>
                         <button onClick={() => navigate('/auntifikasi/sign-in')}  className="bg-[var(--color-base-300)] py-2 mt-8 px-16 text-xl font-semibold rounded-lg mx-auto block hover:bg-[var(--color-base-400)] transition">
                             Sign In
                         </button>

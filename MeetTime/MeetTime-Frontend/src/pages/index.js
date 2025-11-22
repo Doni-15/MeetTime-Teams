@@ -5,5 +5,5 @@ import { Dashboard } from "./components/dashboard";
 
 
 export {
-    SignIn, SignUp, Dashboard
+    SignIn, SignUp, Dashboard,
 }

@@ -11,9 +11,9 @@ export function SignIn(){
                     <div className="w-1/2 rounded-l-4xl py-10 px-8 bg-[var(--warna-netral-abu)]">
                         <h1 className="text-5xl font-bold tracking-wider mb-8">LOGIN</h1>
                         <form action="" className='flex flex-col gap-5'>
-                            <InputBox type="text" placeholder="Nama Lengkap"/>
-                            <InputBox type="email" placeholder="usaha@gmail.com"/>
-                            <InputBox type="password" placeholder="Buat Password Kuat"/>
+                            <InputBox type="text" placeholder="Ex: Doni Simamora" judul="Nama Lengkap"/>
+                            <InputBox type="text" placeholder="Ex: 1234567890" judul="NIM"/>
+                            <InputBox type="password" placeholder="Masukkan Passwword" judul="Password"/>
                         </form>
 
                         <h1 className='text-right text-xl mt-5 mb-8 text-[var(--color-base-300)] hover:text-[var(--color-base-200)] hover:underline hover:cursor-pointer font-semibold tracking-wider'>
