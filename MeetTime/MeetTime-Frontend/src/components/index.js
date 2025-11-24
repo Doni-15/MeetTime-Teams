@@ -8,17 +8,18 @@ import { ListGroup } from "../components/components/list-group";
 import { CaraKerja } from "./components/cara-kerja"
 import { JadwalSaya } from "./components/jadwal-saya"
 import { SideBarAunt } from "./components/side-bar-auntifikasi"
-
+import GuestRoute from "./protected/GuestRoute"
+import ProtectedRoute from "./protected/ProtectedRoute"
 
 export {
     Header, Footer, MainLayout, InputBox, 
     AksiCepat, ListGroup, CaraKerja, JadwalSaya,
-    SideBarAunt,
+    SideBarAunt, ProtectedRoute, GuestRoute
 }
 
-import { CaraKerjaData } from "./dataset/data-carakerja"
 import { DataGroup } from "./dataset/data-group"
 import { DataJadwalSaya } from "./dataset/data-jadwal"
+import { CaraKerjaData } from "./dataset/data-carakerja"
 
 export {
     DataGroup, CaraKerjaData, DataJadwalSaya
