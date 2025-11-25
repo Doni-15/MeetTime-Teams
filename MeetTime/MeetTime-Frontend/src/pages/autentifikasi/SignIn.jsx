@@ -1,55 +1,56 @@
 import { useNavigate } from 'react-router-dom';
-import axios from "axios"
+import { useState } from 'react';
 import { InputBox, SideBarAunt } from "@/components";
-import { useState, useEffect } from 'react';
+import api from "@/config/api";
 
 export function SignIn({ setUser }){
-
     const navigate = useNavigate();
+
     const [form, setForm] = useState({
         nim : "",
         password : "",
     });
-    const [error, setError] = useState("");
 
-    useEffect(() => {
-        setForm({
-            nim: "",
-            password: ""
-        });
-        setError("");
-    }, []);
+    const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleChange = (e) => {
+        const { id, value } = e.target;
+        if (id === 'nim') {
+            const numbersOnly = value.replace(/[^0-9]/g, '');
+            setForm(prev => ({ ...prev, [id]: numbersOnly }));
+        } 
+        else {
+            setForm(prev => ({ ...prev, [id]: value }));
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError("");
 
-        if (!form.nim && !form.password) {
+        if (!form.nim || !form.password) {
             setError("NIM dan Password wajib diisi!");
             return;
         }
 
-        if (!form.nim) {
-            setError("NIM wajib diisi!");
-            return;
-        }
-
-        if (!form.password) {
-            setError("Password wajib diisi!");
-            return;
-        }
+        setIsLoading(true);
 
         try {
-            const res = await axios.post(
-                "http://localhost:5000/auth/login", 
-                form,
-                {withCredentials: true}
-            );
-
+            const res = await api.post("/auth/login", form);
             setUser(res.data.user);
-            navigate("/pages/dashboard");
-            
-        } catch (error) {
-            setError("NIM atau Password salah")
+            navigate("/pages/dashboard", { replace: true });  
+        } 
+        catch (err) {
+            if (!err.response) {
+                setError("Gagal terhubung ke server (Cek koneksi internet)");
+            } 
+            else {
+                setError(err.response?.data?.message || "NIM atau Password salah");
+            }
+        }
+        finally {
+            setIsLoading(false);
         }
     }
 
@@ -59,41 +60,27 @@ export function SignIn({ setUser }){
                 <div className="flex px-15 my-5 w-full">
                     <div className="w-1/2 rounded-l-4xl py-10 px-8 bg-[var(--warna-netral-abu)]">
                         <h1 className="text-2xl font-bold tracking-wider mb-5 text-center">LOGIN</h1>
-                        <form onSubmit={handleSubmit} className='flex flex-col gap-5'>
+                        <form onSubmit={handleSubmit} className='flex flex-col gap-5 mb-10'>
                             <InputBox
+                                id="nim"
                                 type="text"
                                 placeholder="Ex: 1234567890"
                                 judul="NIM"
                                 value={form.nim}
                                 autoComplete="off"
-                                onChange={(e) => {
-                                    const hanyaAngka = e.target.value.replace(/[^0-9]/g, '');
-                                    
-                                    setForm({
-                                        ...form,
-                                        nim: hanyaAngka,
-                                    })
-                                }}
+                                onChange={handleChange}
                             />
     
                             <InputBox
+                                id="password"
                                 type="password"
                                 placeholder="Masukkan Password"
                                 judul="Password"
                                 value={form.password}
                                 autoComplete="new-password"
-                                onChange={(e) =>
-                                    setForm({
-                                        ...form,
-                                        password: e.target.value,
-                                    })
-                                }
+                                onChange={handleChange}
                             />
                         </form>
-    
-                        <h1 className='text-right text-base my-5 text-[var(--color-base-300)] hover:text-[var(--color-base-200)] hover:underline hover:cursor-pointer font-semibold tracking-wider'>
-                            Lupa Password?
-                        </h1>
 
                         {error && (
                             <div 
@@ -106,16 +93,16 @@ export function SignIn({ setUser }){
                         )}
                         
                         <SideBarAunt 
-                            buttonText="Sign In"
+                            buttonText={isLoading ? "Memproses..." : "Sign In"}
                             tombolKiri={false}
-                            onClick={handleSubmit}
+                            onClick={isLoading ? null : handleSubmit}
                         />
                     </div>
                     <SideBarAunt 
                         title="Belum Memiliki Akun?"
                         subTitle="Sign Up Untuk Memulai"
                         buttonText="Sign Up"
-                        buttonLink="/auntifikasi/sign-up"
+                        buttonLink="/autentifikasi/sign-up"
                         navigate={navigate}
                         tombolKiri={true}
                     />

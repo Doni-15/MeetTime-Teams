@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 import pool from '../config/db.js';
 
-export const protect = async (req, res, next) => {
+// Encript token 
+export async function protect(req, res, next) {
     try {
         const token = req.cookies.token;
 
@@ -17,18 +18,15 @@ export const protect = async (req, res, next) => {
         );
 
         if (user.rows.length === 0) {
-            return res.status(401).json({ 
-                message: 'Not authorized, user not found' 
-            });
+            return res.status(401).json({ message: 'User not found' });
         }
 
         req.user = user.rows[0];
         next();
 
-    } catch (error) {
-        console.error(error);
-        res.status(401).json({ 
-            message: 'Not authorized, token failed' 
-        });
+    } 
+    catch (error) {
+        console.error("JWT Error:", error.message);
+        res.status(401).json({ message: 'Not authorized, token failed' });
     }
 }
