@@ -3,7 +3,10 @@ import { useEffect, useState } from "react";
 import api from "@/config/api";
 
 import { MainLayout, ProtectedRoute, GuestRoute } from "@/components";
-import { SignIn, SignUp, Dashboard, NotFound, ServerError } from "@/pages";
+
+import { 
+  SignIn, SignUp, Dashboard, NotFound, ServerError, InputKrs
+} from "@/pages";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -51,6 +54,7 @@ export default function App() {
             </ProtectedRoute>
           }>
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="input-krs" element={<InputKrs />} />
           </Route>
           {/* --- AREA PRIVATE (Dashboard) --- */}
 

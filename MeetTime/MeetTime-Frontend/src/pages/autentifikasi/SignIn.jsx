@@ -60,7 +60,7 @@ export function SignIn({ setUser }){
                 <div className="flex px-15 my-5 w-full">
                     <div className="w-1/2 rounded-l-4xl py-10 px-8 bg-[var(--warna-netral-abu)]">
                         <h1 className="text-2xl font-bold tracking-wider mb-5 text-center">LOGIN</h1>
-                        <form onSubmit={handleSubmit} className='flex flex-col gap-5'>
+                        <form onSubmit={handleSubmit} className='flex flex-col gap-5 mb-10'>
                             <InputBox
                                 id="nim"
                                 type="text"
@@ -81,10 +81,6 @@ export function SignIn({ setUser }){
                                 onChange={handleChange}
                             />
                         </form>
-    
-                        <h1 className='text-right text-base my-5 text-[var(--color-base-300)] hover:text-[var(--color-base-200)] hover:underline hover:cursor-pointer font-semibold tracking-wider'>
-                            Lupa Password?
-                        </h1>
 
                         {error && (
                             <div 
@@ -97,9 +93,9 @@ export function SignIn({ setUser }){
                         )}
                         
                         <SideBarAunt 
-                            buttonText="Sign In"
+                            buttonText={isLoading ? "Memproses..." : "Sign In"}
                             tombolKiri={false}
-                            onClick={handleSubmit}
+                            onClick={isLoading ? null : handleSubmit}
                         />
                     </div>
                     <SideBarAunt 

@@ -1,34 +1,39 @@
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { InputBox, SideBarAunt } from "@/components";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import api from "@/config/api";
+
+const maxNIM = 20;
+const minPassword = 6;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function SignUp(){
     const navigate = useNavigate();
+
     const [form, setForm] = useState({
         name : "",
         email : "",
         nim : "",
         password : "",
-    });
+    });  
     
     const [error, setError] = useState("");
-    
-    useEffect(() => {
-        setForm({
-            name : "",
-            email : "",
-            nim : "",
-            password : "",
-        });
-        setError("");
-    }, []);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleChange = (e) => {
+        const { id, value } = e.target;
+        if (id === 'nim') {
+            const numbersOnly = value.replace(/[^0-9]/g, '');
+            setForm(prev => ({ ...prev, [id]: numbersOnly }));
+        } 
+        else {
+            setForm(prev => ({ ...prev, [id]: value }));
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const maxNIM = 20;
-        const minPassword = 6;
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        setError("");
 
         if (!form.name || !form.email || !form.nim || !form.password) {
             setError("Semua form wajib diisi!");
@@ -50,18 +55,25 @@ export function SignUp(){
             return;
         }
 
+        setIsLoading(true);
+
         try {
-            await axios.post(
-                'http://localhost:5000/auth/register',
-                form,
-                { withCredentials: true }
-            );
+            await api.post("/auth/register", form);            
+            navigate("/autentifikasi/sign-in", { replace: true });  
 
-            navigate("/auntifikasi/sign-in");
+        } 
+        catch (err) {
+            console.error("Register Error:", err);
 
-        } catch (error) {
-            console.error("Register Error:", error.response);
-            setError(error.response?.data?.message || "Terjadi kesalahan server");
+            if (!err.response) {
+                setError("Gagal terhubung ke server (Cek koneksi internet)");
+            } 
+            else {
+                setError(err.response?.data?.message || "Gagal mendaftar");
+            }
+        } 
+        finally {
+            setIsLoading(false);
         }
     };
 
@@ -71,64 +83,49 @@ export function SignUp(){
                 <div className="flex mx-15 my-5 w-full">
                     <div className="w-1/2 rounded-l-4xl py-10 px-8 bg-[var(--warna-netral-abu)]">
                         <h1 className="text-2xl font-bold tracking-wider mb-5 text-center">REGISTRASI</h1>
-                        <form onSubmit={handleSubmit} className='flex flex-col gap-5'>
+                        
+                        <form onSubmit={handleSubmit} className='flex flex-col gap-5' autoComplete="off">
                             <InputBox
+                                id="name"
                                 type="text"
                                 placeholder="Ex: Doni Simamora" 
                                 judul="Nama Lengkap"
                                 value={form.name}
                                 autoComplete="off"
-                                onChange={(e) =>
-                                    setForm({
-                                        ...form,
-                                        name: e.target.value,
-                                    })
-                                }
+                                onChange={handleChange}
                             />
 
                             <InputBox
+                                id="email"
                                 type="email" 
                                 placeholder="Ex: donisimamora@gmail.com" 
                                 judul="Email"
                                 value={form.email}
                                 autoComplete="off"
-                                onChange={(e) =>
-                                    setForm({
-                                        ...form,
-                                        email: e.target.value,
-                                    })
-                                }
+                                onChange={handleChange}
                             />
 
                             <InputBox
-                                type="text"
-                                placeholder="Ex: 1234567890"
+                                id="nim"
+                                type="text" 
+                                placeholder="Ex: 1234567890" 
                                 judul="NIM"
                                 value={form.nim}
                                 autoComplete="off"
-                                onChange={(e) =>
-                                    setForm({
-                                        ...form,
-                                        nim: e.target.value,
-                                    })
-                                }
+                                onChange={handleChange}
                             />
 
                             <InputBox
+                                id="password"
                                 type="password" 
-                                placeholder="Masukkan Password"
+                                placeholder="Masukkan Password" 
                                 judul="Masukkan Password"
                                 value={form.password}
                                 autoComplete="new-password"
-                                onChange={(e) =>
-                                    setForm({
-                                        ...form,
-                                        password: e.target.value,
-                                    })
-                                }
+                                onChange={handleChange}
                             />
-
                         </form>
+
                         {error && (
                             <div 
                                 className="flex flex-col text-center bg-red-100 border border-[var(--color-error)] text-[var(--color-error)] px-4 py-3 rounded-lg relative mb-8 mt-4" 
@@ -138,19 +135,21 @@ export function SignUp(){
                                 <span className="block sm:inline text-base">{error}</span>
                             </div>
                         )}
+
                         <div className='mt-10'>
                             <SideBarAunt 
-                                buttonText="Sign Up"
+                                buttonText={isLoading ? "Memproses..." : "Sign Up"}
                                 tombolKiri={false}
-                                onClick={handleSubmit}
+                                onClick={isLoading ? null : handleSubmit}
                             />
                         </div> 
                     </div>
+                    
                     <SideBarAunt 
                         title="Sudah Memiliki Akun?"
                         subTitle="Sign In Untuk Masuk"
                         buttonText="Sign In"
-                        buttonLink="/auntifikasi/sign-in"
+                        buttonLink="/autentifikasi/sign-in"
                         navigate={navigate}
                         tombolKiri={true}
                     />
