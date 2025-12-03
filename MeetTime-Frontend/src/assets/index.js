@@ -1,4 +1,4 @@
-import LogoBesar from "./logo Besar.svg";
+import LogoBesar from "./logo-besar.svg";
 
 export {
     LogoBesar
