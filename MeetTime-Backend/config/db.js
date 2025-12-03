@@ -1,28 +1,31 @@
-import { Pool } from "pg";
+import pg from "pg";
 import dotenv from "dotenv";
-
 dotenv.config();
 
-const pool = new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
+let pool;
 
-    ssl: {
-        rejectUnauthorized: false,
-    },
-    
-    port: process.env.DB_PORT,
-});
-
+if (process.env.DATABASE_URL) {
+    pool = new pg.Pool({
+        connectionString: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false }
+    });
+} 
+else {
+    pool = new pg.Pool({
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
+        database: process.env.DB_NAME,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD
+    });
+}
 
 pool.on("connect", () => {
     console.log("Connected to the database");
 });
 
 pool.on("error", (err) => {
-    console.error("Database erro", err);
+    console.error("Database error:", err);
 });
 
 export default pool;
