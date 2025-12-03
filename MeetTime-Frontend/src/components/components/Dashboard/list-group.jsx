@@ -1,5 +1,5 @@
 import { ArrowRightIcon, UserGroupIcon, PlusCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 
@@ -7,21 +7,12 @@ import { useGroup } from '../../../hooks/useGroup';
 import { InputBox } from '../../components/GlobalComponents'; 
 
 export function ListGroup() {
-    const { myGroups, loading, error, joinGroup } = useGroup();
+    const { myGroups, loading, joinGroup } = useGroup();
     const safeGroups = Array.isArray(myGroups) ? myGroups : [];
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [kodeUndangan, setKodeUndangan] = useState("");
     const [isJoining, setIsJoining] = useState(false);
-
-    useEffect(() => {
-        if (error) {
-            const errorMessage = typeof error === 'string' 
-                ? error 
-                : error?.message || "Terjadi kesalahan saat memuat data.";
-            toast.error(errorMessage);
-        }
-    }, [error]);
 
     const formatRole = (role) => {
         if (!role || typeof role !== 'string') return '-';
@@ -42,7 +33,7 @@ export function ListGroup() {
                 toast.success("Berhasil bergabung ke grup!");
             }
         } catch (err) {
-
+            toast.error("Gagal bergabung. Cek kode undangan.");
         } finally {
             setIsJoining(false);
         }
@@ -143,7 +134,7 @@ export function ListGroup() {
                             <div className="mb-6">
                                 <InputBox 
                                     variant="bold"
-                                    judul="Kode Undangan (UUID)"
+                                    judul="Kode Undangan"
                                     placeholder="Contoh: 550e8400-e29b..."
                                     value={kodeUndangan}
                                     onChange={(e) => setKodeUndangan(e.target.value)}
