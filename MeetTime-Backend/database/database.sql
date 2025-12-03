@@ -11,7 +11,6 @@ CREATE TABLE Users(
     password TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-DROP TABLE Users;
 
 -- ini untuk krs
 CREATE TABLE MataKuliah(
@@ -27,7 +26,6 @@ CREATE TABLE MataKuliah(
         REFERENCES Users(id)
         ON DELETE CASCADE
 );
-DROP TABLE MataKuliah;
 
 -- ini untuk waktu dinamis
 CREATE TABLE KegiatanDinamis(
@@ -43,7 +41,7 @@ CREATE TABLE KegiatanDinamis(
         REFERENCES Users(id)
         ON DELETE CASCADE
 );
-DROP TABLE KegiatanDinamis;
+
 
 -- ini untuk data grup
 CREATE TABLE Groups(
@@ -59,7 +57,6 @@ CREATE TABLE Groups(
         REFERENCES Users(id)
         ON DELETE CASCADE
 );
-DROP TABLE Groups;
 
 -- ini untuk penghubung grup dan user
 CREATE TABLE GroupMembers(
@@ -83,7 +80,6 @@ CREATE TABLE GroupMembers(
     CONSTRAINT unique_member_per_group 
         UNIQUE(group_id, user_id) 
 );
-DROP TABLE GroupMembers;
 
 -- ini untuk chat dalam grup
 CREATE TABLE ChatGroups(
@@ -105,3 +101,8 @@ CREATE TABLE ChatGroups(
         ON DELETE CASCADE
 );
 DROP TABLE ChatGroups;
+DROP TABLE Users;
+DROP TABLE Groups;
+DROP TABLE KegiatanDinamis;
+DROP TABLE MataKuliah;
+DROP TABLE GroupMembers;
