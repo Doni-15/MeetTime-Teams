@@ -1,4 +1,4 @@
-import { ArrowRightIcon, UserGroupIcon, PlusCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { ArrowRightIcon, UserGroupIcon, PlusCircleIcon, XMarkIcon, PlusIcon } from '@heroicons/react/24/outline'; // Tambah PlusIcon
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
@@ -7,11 +7,15 @@ import { useGroup } from '../../../hooks/useGroup';
 import { InputBox } from '../../components/GlobalComponents'; 
 
 export function ListGroup() {
-    const { myGroups, loading, error, joinGroup } = useGroup();
+    const { myGroups, loading, error, joinGroup, createGroup } = useGroup();
     
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
     const [kodeUndangan, setKodeUndangan] = useState("");
     const [isJoining, setIsJoining] = useState(false);
+
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [namaGroupBaru, setNamaGroupBaru] = useState("");
+    const [isCreating, setIsCreating] = useState(false);
 
     useEffect(() => {
         if (error) toast.error(error);
@@ -31,8 +35,23 @@ export function ListGroup() {
 
         if (success) {
             setKodeUndangan("");
-            setIsModalOpen(false);
+            setIsJoinModalOpen(false);
             toast.success("Berhasil bergabung ke grup!");
+        }
+    };
+
+    const handleCreateSubmit = async (e) => {
+        e.preventDefault();
+        if (!namaGroupBaru) return;
+
+        setIsCreating(true);
+        const success = await createGroup(namaGroupBaru); 
+        setIsCreating(false);
+
+        if (success) {
+            setNamaGroupBaru("");
+            setIsCreateModalOpen(false);
+            toast.success("Grup berhasil dibuat!");
         }
     };
 
@@ -46,13 +65,23 @@ export function ListGroup() {
                         <p className="text-xs text-neutral/60 font-medium">Daftar tim & kolaborasi</p>
                     </div>
                     
-                    <button 
-                        onClick={() => setIsModalOpen(true)}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-white transition-all duration-300 text-sm font-semibold group"
-                    >
-                        <PlusCircleIcon className="size-5" />
-                        <span className="hidden md:inline">Gabung</span>
-                    </button>
+                    <div className="flex gap-2">
+                        <button 
+                            onClick={() => setIsCreateModalOpen(true)}
+                            className="flex items-center gap-2 px-3 py-1.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all duration-300 text-sm font-semibold shadow-md shadow-primary/20"
+                        >
+                            <PlusIcon className="size-5" />
+                            <span className="hidden md:inline">Buat Baru</span>
+                        </button>
+
+                        <button 
+                            onClick={() => setIsJoinModalOpen(true)}
+                            className="flex items-center gap-2 px-3 py-1.5 bg-base-200 text-neutral/70 rounded-lg hover:bg-base-300 transition-all duration-300 text-sm font-semibold"
+                        >
+                            <UserGroupIcon className="size-5" />
+                            <span className="hidden md:inline">Gabung</span>
+                        </button>
+                    </div>
                 </div>
 
                 <section className='flex-1 overflow-y-auto hide-scrollbar flex flex-col gap-3'>
@@ -101,20 +130,28 @@ export function ListGroup() {
                             </div>
                             <p className="font-bold text-sm text-neutral/80">Belum ada grup</p>
                             <p className="text-xs text-neutral/50 mb-4 max-w-[200px]">
-                                Bergabunglah dengan grup temanmu untuk mulai mengatur jadwal.
+                                Buat grup baru atau gabung dengan temanmu.
                             </p>
-                            <button 
-                                onClick={() => setIsModalOpen(true)} 
-                                className="text-xs font-bold text-primary hover:underline underline-offset-2"
-                            >
-                                Gabung Sekarang
-                            </button>
+                            <div className="flex gap-2">
+                                <button 
+                                    onClick={() => setIsCreateModalOpen(true)} 
+                                    className="text-xs font-bold text-white bg-primary px-4 py-2 rounded-lg hover:bg-primary/90"
+                                >
+                                    Buat Grup
+                                </button>
+                                <button 
+                                    onClick={() => setIsJoinModalOpen(true)} 
+                                    className="text-xs font-bold text-primary bg-primary/10 px-4 py-2 rounded-lg hover:bg-primary/20"
+                                >
+                                    Gabung Kode
+                                </button>
+                            </div>
                         </div>
                     )}
                 </section>
             </section>
 
-            {isModalOpen && (
+            {isJoinModalOpen && (
                 <div className="fixed inset-0 z-[60] flex items-center justify-center bg-utama/60 backdrop-blur-sm p-4 transition-all duration-300">
                     <div className="bg-netral-putih rounded-2xl shadow-2xl w-full max-w-md p-6 md:p-8 animate-in fade-in zoom-in duration-200 border border-white/20">
                         <div className="flex justify-between items-start mb-6">
@@ -122,7 +159,7 @@ export function ListGroup() {
                                 <h3 className="text-xl font-bold text-utama">Gabung Grup</h3>
                                 <p className="text-sm text-neutral/60">Masukkan kode undangan yang valid.</p>
                             </div>
-                            <button onClick={() => setIsModalOpen(false)} className="p-1 rounded-full hover:bg-base-200 text-neutral/60 hover:text-error transition-colors">
+                            <button onClick={() => setIsJoinModalOpen(false)} className="p-1 rounded-full hover:bg-base-200 text-neutral/60 hover:text-error transition-colors">
                                 <XMarkIcon className="size-6" />
                             </button>
                         </div>
@@ -137,26 +174,52 @@ export function ListGroup() {
                                     onChange={(e) => setKodeUndangan(e.target.value)}
                                     autoFocus
                                 />
-                                <p className="text-xs text-neutral/50 mt-2 italic">
-                                    *Pastikan kode yang anda masukkan benar.
-                                </p>
                             </div>
 
                             <div className="flex justify-end gap-3 pt-2">
-                                <button 
-                                    type="button"
-                                    onClick={() => setIsModalOpen(false)}
-                                    className="px-5 py-2.5 text-sm font-semibold text-neutral/70 bg-base-200 rounded-xl hover:bg-base-300 transition-colors"
-                                >
+                                <button type="button" onClick={() => setIsJoinModalOpen(false)} className="px-5 py-2.5 text-sm font-semibold text-neutral/70 bg-base-200 rounded-xl hover:bg-base-300 transition-colors">
                                     Batal
                                 </button>
-                                <button 
-                                    type="submit"
-                                    disabled={isJoining || !kodeUndangan}
-                                    className="px-6 py-2.5 text-sm font-bold text-white bg-primary rounded-xl hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 flex items-center gap-2 transition-all"
-                                >
-                                    {isJoining && <span className="loading loading-spinner loading-xs"></span>}
-                                    {isJoining ? "Memproses..." : "Gabung Grup"}
+                                <button type="submit" disabled={isJoining || !kodeUndangan} className="px-6 py-2.5 text-sm font-bold text-white bg-primary rounded-xl hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 flex items-center gap-2">
+                                    {isJoining ? "Memproses..." : "Gabung"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {isCreateModalOpen && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-utama/60 backdrop-blur-sm p-4 transition-all duration-300">
+                    <div className="bg-netral-putih rounded-2xl shadow-2xl w-full max-w-md p-6 md:p-8 animate-in fade-in zoom-in duration-200 border border-white/20">
+                        <div className="flex justify-between items-start mb-6">
+                            <div>
+                                <h3 className="text-xl font-bold text-utama">Buat Grup Baru</h3>
+                                <p className="text-sm text-neutral/60">Beri nama untuk grup tim kamu.</p>
+                            </div>
+                            <button onClick={() => setIsCreateModalOpen(false)} className="p-1 rounded-full hover:bg-base-200 text-neutral/60 hover:text-error transition-colors">
+                                <XMarkIcon className="size-6" />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleCreateSubmit}>
+                            <div className="mb-6">
+                                <InputBox 
+                                    variant="bold"
+                                    judul="Nama Grup"
+                                    placeholder="Contoh: Tim Skripsi, Panitia Event..."
+                                    value={namaGroupBaru}
+                                    onChange={(e) => setNamaGroupBaru(e.target.value)}
+                                    autoFocus
+                                />
+                            </div>
+
+                            <div className="flex justify-end gap-3 pt-2">
+                                <button type="button" onClick={() => setIsCreateModalOpen(false)} className="px-5 py-2.5 text-sm font-semibold text-neutral/70 bg-base-200 rounded-xl hover:bg-base-300 transition-colors">
+                                    Batal
+                                </button>
+                                <button type="submit" disabled={isCreating || !namaGroupBaru} className="px-6 py-2.5 text-sm font-bold text-white bg-primary rounded-xl hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 flex items-center gap-2">
+                                    {isCreating ? "Membuat..." : "Buat Grup"}
                                 </button>
                             </div>
                         </form>
