@@ -134,8 +134,8 @@ export function AgendaDinamis() {
             <section className="flex flex-col gap-4">
                 <div className="flex justify-between items-end px-2">
                     <div>
-                        <h2 className="text-xl font-bold text-utama">Daftar Agenda</h2>
-                        <p className="text-sm text-neutral/60">Total {daftarAgenda.length} kegiatan tersimpan</p>
+                        <h2 className="text-xl font-bold text-white/100">Daftar Agenda</h2>
+                        <p className="text-sm text-white/70">Total {daftarAgenda.length} kegiatan tersimpan</p>
                     </div>
                     <CalendarDaysIcon className="size-6 text-neutral/30" />
                 </div>
@@ -149,7 +149,7 @@ export function AgendaDinamis() {
                     )}
 
                     {!loading && daftarAgenda.length === 0 && (
-                        <div className="col-span-full py-12 flex flex-col items-center justify-center border-2 border-dashed border-base-200 rounded-3xl bg-base-100/30 text-neutral/50">
+                        <div className="col-span-full py-12 flex flex-col items-center justify-center border-2 border-dashed border-base-200 rounded-3xl bg-base-100/40 text-white/60">
                             <CalendarDaysIcon className="size-10 mb-2 opacity-50"/>
                             <p className="font-medium">Belum ada agenda minggu ini.</p>
                         </div>

@@ -157,9 +157,9 @@ export function AddMemberGrup() {
                     )}
                     
                     {groupMembers.map((member) => (
-                        <div key={member.id} className="group flex justify-between items-center p-3 rounded-xl hover:bg-base-400/30 transition-colors border border-transparent hover:border-base-200">
+                        <div key={member.id} className="group flex justify-between items-center p-3 rounded-xl bg-base-400/30 transition-colors border border-base-200">
                             <div className="flex items-center gap-3">
-                                <div className="size-10 rounded-full bg-base-200 flex items-center justify-center text-sm font-bold text-neutral/70 group-hover:bg-white group-hover:text-primary transition-colors">
+                                <div className="size-10 rounded-full flex items-center justify-center text-sm font-bold bg-white transition-colors">
                                     {member.name.charAt(0).toUpperCase()}
                                 </div>
                                 <div className="flex flex-col">

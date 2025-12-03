@@ -2,7 +2,7 @@ export function InputBox({ variant = "bold", type = "text", placeholder, value, 
     
     const styles = {
         bold: "w-full py-2.5 px-4 rounded-xl border-2 border-neutral/30 bg-netral-putih text-custom-text placeholder:text-neutral/40 focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none transition-all duration-300",
-        soft: "w-full py-3 px-4 rounded-xl bg-base-200/50 border border-transparent text-custom-text placeholder:text-neutral/40 hover:bg-base-200 focus:bg-netral-putih focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none transition-all duration-300"
+        soft: "w-full py-3 px-4 rounded-xl bg-base-200/50 border border-transparent text-custom-text placeholder:text-neutral/40 hover:bg-base-200/70 focus:bg-netral-putih focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none transition-all duration-300"
     };
 
     const baseClass = styles[variant] || styles.soft;
@@ -37,7 +37,7 @@ export function SelectBox({ variant = "soft", judul, value, onChange, name, opti
     const styles = {
         bold: "w-full py-2.5 px-4 pr-10 rounded-xl border-2 border-neutral/30 bg-netral-putih text-custom-text font-medium focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none appearance-none transition-all duration-300",
         
-        soft: "w-full py-3 px-4 pr-10 rounded-xl bg-base-200/50 border border-transparent text-custom-text hover:bg-base-200 focus:bg-netral-putih focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none appearance-none cursor-pointer transition-all duration-300"
+        soft: "w-full py-3 px-4 pr-10 rounded-xl bg-base-200/50 border border-transparent text-custom-text hover:bg-base-200/70 focus:bg-netral-putih focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none appearance-none cursor-pointer transition-all duration-300"
     };
 
     const baseClass = styles[variant] || styles.soft;
@@ -80,7 +80,7 @@ export function TextAreaBox({ variant = "soft", judul, value, onChange, placehol
     const styles = {
         bold: "w-full py-2.5 px-4 rounded-xl border-2 border-neutral/30 bg-netral-putih text-custom-text placeholder:text-neutral/40 focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none transition-all duration-300 resize-none",
         
-        soft: "w-full py-3 px-4 rounded-xl bg-base-200/50 border border-transparent text-custom-text placeholder:text-neutral/40 hover:bg-base-200 focus:bg-netral-putih focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none transition-all duration-300 resize-none"
+        soft: "w-full py-3 px-4 rounded-xl bg-base-200/50 border border-transparent text-custom-text placeholder:text-neutral/40 hover:bg-base-200/70 focus:bg-netral-putih focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none transition-all duration-300 resize-none"
     };
 
     const baseClass = styles[variant] || styles.soft;

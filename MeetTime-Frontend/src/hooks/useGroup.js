@@ -127,15 +127,14 @@ export function useGroup() {
         }
     };
 
-    // --- FITUR BARU: DELETE GRUP ---
     const deleteGroup = async (groupId, navigate) => {
         const result = await Swal.fire({
             title: 'Hapus Grup Ini?',
             text: "Grup dan seluruh datanya akan dihapus permanen. Tindakan ini tidak bisa dibatalkan!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33', // Merah
-            cancelButtonColor: '#3085d6', // Biru
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
             confirmButtonText: 'Ya, Hapus Grup!',
             cancelButtonText: 'Batal'
         });
@@ -148,11 +147,10 @@ export function useGroup() {
         try {
             await groupService.deleteGroup(groupId);
             toast.success('Grup berhasil dihapus!', { id: loadingToast });
-            // Redirect ke dashboard setelah berhasil hapus
             navigate('/pages/dashboard'); 
         } 
         catch (err) {
-            const msg = err.response?.data?.message || "Gagal menghapus grup";
+            const msg = "Gagal menghapus grup";
             toast.error(msg, { id: loadingToast });
         } 
         finally {

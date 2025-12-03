@@ -53,9 +53,7 @@ export function GroupsPages() {
     }, [groupMembers, debouncedSearch]);
 
     const handleDeleteGroup = () => {
-        if (window.confirm("Apakah anda yakin ingin menghapus grup ini secara permanen?")) {
-            deleteGroup(groupId, navigate);
-        }
+        deleteGroup(groupId, navigate);
     };
 
     return (

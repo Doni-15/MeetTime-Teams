@@ -130,13 +130,13 @@ export function InputKrs() {
                 </form>
             </section>
 
-            <section className="flex flex-col gap-4">
+            <section className="flex flex-col gap-4 md:text-base font-bold tracking-wide drop-shadow-sm">   
                 <div className="flex justify-between items-end px-2">
                     <div>
-                        <h2 className="text-xl font-bold text-utama">Daftar Mata Kuliah</h2>
-                        <p className="text-sm text-neutral/60">Total {daftarKrs.length} mata kuliah terdaftar</p>
+                        <h2 className="text-xl font-bold text-white/100">Daftar Mata Kuliah</h2>
+                        <p className="text-sm text-white/70">Total {daftarKrs.length} mata kuliah terdaftar</p>
                     </div>
-                    <BookOpenIcon className="size-6 text-neutral/30" />
+                    <BookOpenIcon className="size-6 text-white/100" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -148,7 +148,7 @@ export function InputKrs() {
                     )}
 
                     {!loading && daftarKrs.length === 0 && (
-                        <div className="col-span-full py-12 flex flex-col items-center justify-center border-2 border-dashed border-base-200 rounded-3xl bg-base-100/30 text-neutral/50">
+                        <div className="col-span-full py-12 flex flex-col items-center justify-center border-2 border-dashed border-base-200 rounded-3xl bg-base-100/40 text-white/60">
                             <BookOpenIcon className="size-10 mb-2 opacity-50"/>
                             <p className="font-medium">Belum ada jadwal yang diinput.</p>
                         </div>
