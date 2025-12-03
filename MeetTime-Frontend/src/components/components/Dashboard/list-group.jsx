@@ -149,7 +149,7 @@ export function ListGroup() {
                                 <button 
                                     type="button"
                                     onClick={() => setIsModalOpen(false)}
-                                    className="px-5 py-2.5 text-sm font-semibold text-neutral/70 bg-base-200 rounded-xl hover:bg-base-300 transition-colors"
+                                    className="px-5 py-2.5 text-sm font-semibold text-gray-50 bg-base-200 rounded-xl hover:bg-base-300 transition-colors"
                                 >
                                     Batal
                                 </button>

@@ -31,7 +31,7 @@ export function AksiCepat() {
                     </p>
                 </div>
                 
-                <div className="h-10 w-10 rounded-full bg-base-200 flex items-center justify-center text-[var(--color-netral-abu)]">
+                <div className="h-10 w-10 rounded-full bg-base-300 flex items-center justify-center text-[var(--color-netral-abu)]">
                     <PlusIcon className="size-6" />
                 </div>
             </div>
