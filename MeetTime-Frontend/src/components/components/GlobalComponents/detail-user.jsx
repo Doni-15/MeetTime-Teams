@@ -40,7 +40,7 @@ export function DetailUser({ user, setUser, isOpen }) {
                         </h1>
                         
                         <div className="mt-2 text-center space-y-1">
-                            <p className="text-sm font-semibold text-gray-700">Ilmu Komputer</p>
+                            <p className="text-sm font-semibold text-gray-700">{user?.jurusan}</p>
                             <p className="text-xs font-bold text-gray-600 bg-gray-200 px-3 py-1 rounded-full inline-block border border-gray-300/50">
                                 Angkatan 20{user?.nim ? user.nim.slice(0, 2) : "XX"}
                             </p>

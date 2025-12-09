@@ -101,6 +101,9 @@ export function AddMemberGrup() {
                                                     <span className="font-bold text-utama text-base md:text-lg leading-tight">
                                                         {user.name}
                                                     </span>
+                                                    <span className="text-xs font-semibold text-primary mb-0.5">
+                                                        {user.jurusan}
+                                                    </span>
                                                     <span className="text-sm font-medium text-neutral/60">
                                                         {user.nim}
                                                     </span>
@@ -159,16 +162,18 @@ export function AddMemberGrup() {
                     {groupMembers.map((member) => (
                         <div key={member.id} className="group flex justify-between items-center p-3 rounded-xl bg-base-400/30 transition-colors border border-base-200">
                             <div className="flex items-center gap-3">
-                                <div className="size-10 rounded-full flex items-center justify-center text-sm font-bold bg-white transition-colors">
+                                <div className="size-10 rounded-full flex items-center justify-center text-sm font-bold bg-white transition-colors border border-base-200 text-utama">
                                     {member.name.charAt(0).toUpperCase()}
                                 </div>
                                 <div className="flex flex-col">
                                     <span className="font-bold text-custom-text text-sm md:text-base">
                                         {member.name}
                                     </span>
-                                    <span className="text-xs font-semibold text-neutral/50">
-                                        {member.nim}
-                                    </span>
+                                    <div className="flex flex-col md:flex-row md:gap-2 md:items-center text-xs text-neutral/50">
+                                        <span className="font-semibold text-secondary/80">{member.jurusan}</span>
+                                        <span className="hidden md:inline">•</span>
+                                        <span>{member.nim}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -10,7 +10,7 @@ export function SignIn({ setUser }) {
     const navigate = useNavigate();
 
     const [form, setForm] = useState({
-        nim: "",
+        nim: "",        // Sudah benar (menggunakan nim)
         password: "",
     });
 
@@ -19,6 +19,8 @@ export function SignIn({ setUser }) {
 
     const handleChange = (e) => {
         const { id, value } = e.target;
+        
+        // Validasi input hanya angka untuk NIM
         if (id === 'nim') {
             const numbersOnly = value.replace(/[^0-9]/g, '');
             setForm(prev => ({ ...prev, [id]: numbersOnly }));
@@ -32,6 +34,7 @@ export function SignIn({ setUser }) {
         e.preventDefault();
         setError("");
 
+        // Validasi kelengkapan data
         if (!form.nim || !form.password) {
             setError("NIM dan Password wajib diisi!");
             return;
@@ -40,8 +43,13 @@ export function SignIn({ setUser }) {
         setIsLoading(true);
 
         try {
+            // Mengirim { nim, password } ke backend
+            // Backend akan mencocokkan NIM di database
             const res = await API.post("/auth/login", form);
+            
+            // Simpan data user (termasuk id, name, jurusan, nim) ke state global
             setUser(res.data.user);
+            
             toast.success('Login berhasil!');
             navigate("/pages/dashboard", { replace: true });
         }
@@ -51,6 +59,7 @@ export function SignIn({ setUser }) {
                 setError("Gagal terhubung ke server (Cek koneksi internet)");
             }
             else {
+                // Pesan error dari backend (misal: "NIM tidak ditemukan" atau "Password salah")
                 setError(err.response?.data?.message || "NIM atau Password salah");
             }
         }
@@ -62,6 +71,8 @@ export function SignIn({ setUser }) {
     return (
         <main className="min-h-screen w-full bg-base-400 flex items-center justify-center p-4 md:p-6 font-sans">
             <div className="w-full max-w-5xl bg-netral-putih rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row">
+                
+                {/* Bagian Form Login */}
                 <div className="w-full lg:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
                     <div className="mb-8 text-center lg:text-left">
                         <h1 className="text-3xl lg:text-4xl font-bold text-utama mb-2">
@@ -79,7 +90,7 @@ export function SignIn({ setUser }) {
                             placeholder="Contoh: 1234567890"
                             judul="NIM"
                             value={form.nim}
-                            autoComplete="username"
+                            autoComplete="username" 
                             onChange={handleChange}
                         />
 
@@ -92,6 +103,8 @@ export function SignIn({ setUser }) {
                             autoComplete="current-password"
                             onChange={handleChange}
                         />
+                        
+                        <button type="submit" className="hidden" disabled={isLoading} />
 
                         {error && (
                             <div
@@ -113,6 +126,7 @@ export function SignIn({ setUser }) {
                     </form>
                 </div>
 
+                {/* Bagian Sidebar Kanan (Link ke Sign Up) */}
                 <div className="w-full lg:w-1/2 bg-utama text-netral-putih relative flex flex-col justify-center items-center p-12 overflow-hidden">
                     <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
                     <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>

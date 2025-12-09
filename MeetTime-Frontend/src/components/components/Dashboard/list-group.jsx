@@ -100,7 +100,7 @@ export function ListGroup() {
                     {!loading && safeGroups.length === 0 && (
                         <div className="flex flex-col items-center justify-center h-full text-center border-2 border-dashed border-base-200 rounded-xl bg-base-100/20 p-6">
                             <div className="p-3 bg-base-200 rounded-full mb-3">
-                                <UserGroupIcon className="size-8 text-base-200"/>
+                                <UserGroupIcon className="size-8 text-gray-400"/>
                             </div>
                             <p className="font-bold text-sm text-neutral/80">Belum ada grup</p>
                             <p className="text-xs text-neutral/50 mb-4 max-w-[200px]">

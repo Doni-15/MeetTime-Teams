@@ -16,13 +16,13 @@ const cookieOptions = {
 // Control registrasi user
 export async function register(req, res) {
     try {
-        const { name, email, nim, password } = req.body;
+        const { name, jurusan, nim, password } = req.body;
 
-        if (!name || !email || !nim || !password) {
+        if (!name || !jurusan || !nim || !password) {
             return res.status(400).json({ message: "Semua kolom wajib diisi" });
         }
 
-        const user = await authService.registerUser({ name, email, nim, password });
+        const user = await authService.registerUser({ name, jurusan, nim, password });
 
         res.status(201).json({
             message: "Registrasi berhasil, silakan login",

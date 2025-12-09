@@ -8,14 +8,12 @@ import API from '../../config/api';
 
 const maxNIM = 20;
 const minPassword = 6;
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function SignUp() {
     const navigate = useNavigate();
-
     const [form, setForm] = useState({
         name: "",
-        email: "",
+        jurusan: "",
         nim: "",
         password: "",
     });
@@ -38,13 +36,8 @@ export function SignUp() {
         e.preventDefault();
         setError("");
 
-        if (!form.name || !form.email || !form.nim || !form.password) {
+        if (!form.name || !form.jurusan || !form.nim || !form.password) {
             setError("Semua form wajib diisi!");
-            return;
-        }
-
-        if (!emailRegex.test(form.email)) {
-            setError("Format email tidak valid! (contoh: nama@domain.com)");
             return;
         }
 
@@ -130,12 +123,12 @@ export function SignUp() {
                         </div>
 
                         <InputBox
-                            id="email"
-                            type="email"
-                            placeholder="Contoh: doni@email.com"
-                            judul="Email Mahasiswa"
-                            value={form.email}
-                            autoComplete="email"
+                            id="jurusan" 
+                            type="text" 
+                            placeholder="Contoh: Ilmu Komputer"
+                            judul="Jurusan"
+                            value={form.jurusan} 
+                            autoComplete="off" 
                             onChange={handleChange}
                         />
 

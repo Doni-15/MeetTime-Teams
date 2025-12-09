@@ -2,20 +2,20 @@ import pool from "../config/db.js";
 import bcrypt from "bcryptjs";
 
 // Buat data user baru
-export async function registerUser({ name, email, nim, password }) {
+export async function registerUser({ name, jurusan, nim, password }) {
     const checkUser = await pool.query(
-        "SELECT email, nim FROM Users WHERE email = $1 OR nim = $2",
-        [email, nim]
+        "SELECT nim FROM Users WHERE nim = $1",
+        [nim]
     );
     
     if (checkUser.rows.length > 0) {
-        throw new Error("Email atau NIM sudah terdaftar");
+        throw new Error("NIM sudah terdaftar");
     }
     
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await pool.query(
-        "INSERT INTO Users (name, email, nim, password) VALUES ($1, $2, $3, $4) RETURNING id, name, email, nim",
-        [name, email, nim, hashedPassword]
+        "INSERT INTO Users (name, jurusan, nim, password) VALUES ($1, $2, $3, $4) RETURNING id, name, jurusan, nim",
+        [name, jurusan, nim, hashedPassword]
     );
     
     return newUser.rows[0];
@@ -39,7 +39,7 @@ export async function loginUser(nim, password) {
     return {
         id: userData.id,
         name: userData.name,
-        email: userData.email,
+        jurusan: userData.jurusan,
         nim: userData.nim
     };
 };
