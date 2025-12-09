@@ -99,7 +99,7 @@ export function GroupsPages() {
                                         </button>
 
                                         <button
-                                            onClick={() => navigate(`/pages/groups/${groupId}/add-member`)}
+                                            onClick={() => navigate(`/groups/${groupId}/add-member`)}
                                             className="px-5 py-2.5 bg-primary text-white hover:bg-primary/90 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg shadow-primary/20 transition-all active:scale-95"
                                         >
                                             <PlusIcon className="size-5" />
@@ -145,7 +145,7 @@ export function GroupsPages() {
 
                             <div className="p-4 bg-white border-t border-base-200">
                                 <button 
-                                    onClick={() => navigate(`/pages/groups/${groupId}/waktu-kosong`)}
+                                    onClick={() => navigate(`/groups/${groupId}/waktu-kosong`)}
                                     className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold text-lg py-3.5 rounded-xl shadow-lg shadow-secondary/20 flex items-center justify-center gap-2 transition-all active:scale-[0.99] hover:-translate-y-1"
                                 >
                                     <CalendarDaysIcon className="size-6" />

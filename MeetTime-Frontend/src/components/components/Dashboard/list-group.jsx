@@ -42,7 +42,6 @@ export function ListGroup() {
     return (
         <>
             <section className="h-full w-full bg-netral-putih rounded-3xl p-6 shadow-lg border border-base-200 flex flex-col relative overflow-hidden">
-                
                 <div className="flex justify-between items-center mb-6">
                     <div>
                         <h2 className="text-xl font-bold text-utama tracking-tight">Grup Saya</h2>
@@ -69,7 +68,7 @@ export function ListGroup() {
 
                     {!loading && safeGroups.length > 0 && (
                         safeGroups.map((item, index) => (
-                            <Link key={item?.id || index} to={`/pages/groups/${item?.id}`}>
+                            <Link key={item?.id || index} to={`/groups/${item?.id}`}>
                                 <div className="group w-full p-4 rounded-xl border border-transparent bg-base-400/30 cursor-pointer transition-all duration-300 ease-out
                                     hover:bg-white hover:border-primary/20 hover:shadow-md hover:scale-[1.01]">
                                     

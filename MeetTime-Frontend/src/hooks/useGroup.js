@@ -14,6 +14,7 @@ export function useGroup() {
         setLoading(true);
         try {
             const response = await groupService.getMyGroups();
+            // Handle jika response langsung array atau dibungkus key 'groups'
             setMyGroups(response.groups || response); 
             setError(null);
         } catch (err) {
@@ -27,6 +28,7 @@ export function useGroup() {
         setLoading(true);
         try {
             const response = await groupService.getMembers(groupId);
+            // Handle jika response langsung array atau dibungkus key 'members'
             setGroupMembers(response.members || response);
         } catch (err) {
             // silent error
@@ -114,6 +116,7 @@ export function useGroup() {
         }
     };
 
+    // --- BAGIAN YANG DIPERBAIKI ---
     const searchCandidate = async (keyword) => {
         if (!keyword) {
             setSearchResults([]); 
@@ -121,11 +124,27 @@ export function useGroup() {
         }
         try {
             const response = await groupService.searchUser(keyword);
-            setSearchResults(response.data || []);
+            
+            // Logika Penanganan Data yang Lebih Kuat:
+            if (Array.isArray(response)) {
+                // Kasus 1: Backend langsung mengembalikan array [user1, user2]
+                setSearchResults(response);
+            } else if (response.data && Array.isArray(response.data)) {
+                // Kasus 2: Backend mengembalikan { data: [user1, user2] }
+                setSearchResults(response.data);
+            } else if (response.users && Array.isArray(response.users)) {
+                // Kasus 3: Backend mengembalikan { users: [user1, user2] }
+                setSearchResults(response.users);
+            } else {
+                // Jika format tidak dikenali, set kosong agar tidak crash
+                setSearchResults([]);
+            }
         } catch (err) {
             console.error("Gagal mencari user", err);
+            setSearchResults([]);
         }
     };
+    // ------------------------------
 
     const deleteGroup = async (groupId, navigate) => {
         const result = await Swal.fire({

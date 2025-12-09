@@ -40,7 +40,7 @@ export default function NotFound() {
                     </button>
 
                     <button 
-                        onClick={() => ('/pages/dashboard')} navigate
+                        onClick={() => navigate('/pages/dashboard')} 
                         className="w-full sm:w-auto px-8 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2"
                     >
                         <HomeIcon className="size-5" />

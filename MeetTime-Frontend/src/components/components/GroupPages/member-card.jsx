@@ -13,7 +13,7 @@ export function MemberCard({ name, nim, status = "confirmed", role, onKick }) {
                     shrink-0 size-10 md:size-12 rounded-full flex items-center justify-center text-lg font-bold border-2 border-white shadow-sm
                     ${role === 'admin' 
                         ? 'bg-orange-100 text-orange-600' 
-                        : 'bg-gray-100 text-gray-500' // Ganti jadi gray-100 & gray-500
+                        : 'bg-gray-100 text-gray-500' 
                     }
                 `}>
                     {initial}
@@ -24,7 +24,6 @@ export function MemberCard({ name, nim, status = "confirmed", role, onKick }) {
                         {name}
                     </h3>
                     
-                    {/* PERBAIKAN DISINI: Ganti text-neutral/60 jadi text-gray-500 */}
                     <div className="flex items-center gap-2 text-sm text-gray-500">
                         <span className="font-medium tracking-wide">{nim}</span>
                         
@@ -35,9 +34,7 @@ export function MemberCard({ name, nim, status = "confirmed", role, onKick }) {
                                 Admin
                             </span>
                         ) : (
-                            <span className="bg-gray-100 text-gray-500 text-[10px] uppercase font-bold px-2 py-0.5 rounded-md tracking-wider">
-                                Member
-                            </span>
+                            <span></span>
                         )}
                     </div>
                 </div>

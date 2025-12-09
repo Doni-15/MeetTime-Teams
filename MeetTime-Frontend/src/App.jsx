@@ -5,10 +5,11 @@ import { Toaster } from "react-hot-toast";
 import api from "./config/api";
 
 import { MainLayout } from './components/components/GlobalComponents';
-import { ProtectedRoute, GuestRoute } from './components/protected';
+import { GroupLayout } from './components/components/GroupPages'
+import { ProtectedRoute, GuestRoute, GroupProtectedRoute } from './components/protected';
 
 import { 
-  SignIn, SignUp, Dashboard, NotFound, ServerError, InputKrs, 
+  SignIn, SignUp, Dashboard, NotFound, ServerError, InputKrs,
   AgendaDinamis, AddNewGrup, AddMemberGrup, GroupsPages, CariWaktuKosong
 } from "@/pages";
 
@@ -63,11 +64,23 @@ export default function App() {
             <Route path="input-krs" element={<InputKrs />} />
             <Route path="agenda-dinamis" element={<AgendaDinamis />} />
             <Route path="add-grup" element={<AddNewGrup />} />
-            <Route path="groups/:groupId/add-member" element={<AddMemberGrup />} />
-            <Route path="groups/:groupId" element={<GroupsPages />} />
-            <Route path="groups/:groupId/waktu-kosong" element={<CariWaktuKosong />} />
+
           </Route>
           {/* --- AREA PRIVATE (Dashboard) --- */}
+
+          {/* Halaman groups */}
+          <Route path="/groups" element={
+            <ProtectedRoute user={user} loading={loading}>
+               <GroupLayout user={user} setUser={setUser} />
+            </ProtectedRoute>
+          }>
+             <Route element={<GroupProtectedRoute />}>
+                <Route path=":groupId" element={<GroupsPages />} />
+                <Route path=":groupId/add-member" element={<AddMemberGrup />} />
+                <Route path=":groupId/waktu-kosong" element={<CariWaktuKosong />} />
+             </Route>
+          </Route>
+          {/* Halaman groups */}
 
           {/* --- AREA PUBLIC (Login/Register) --- */}
           <Route path="/autentifikasi/sign-in" element={

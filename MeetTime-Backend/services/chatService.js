@@ -33,25 +33,30 @@ export async function kirimPesan({ groupId, userId, pesan, jenisPesan }) {
 
         return result.rows[0];
 
-    } finally {
+    } 
+    finally {
         client.release();
     }
 }
 
 export async function ambilPesan({ groupId, jenisPesan }) {
     const query = `
-        SELECT 
-            c.id, 
-            c.pesan, 
-            c.jenis_pesan, 
-            c.created_at, 
-            c.user_id,
-            u.name as nama_pengirim, 
-            u.nim as nim_pengirim
-        FROM ChatGroups c
-        JOIN Users u ON c.user_id = u.id
-        WHERE c.group_id = $1 AND c.jenis_pesan = $2
-        ORDER BY c.created_at ASC
+        SELECT * FROM (
+            SELECT 
+                c.id, 
+                c.pesan, 
+                c.jenis_pesan, 
+                c.created_at, 
+                c.user_id,
+                u.name as nama_pengirim, 
+                u.nim as nim_pengirim
+            FROM ChatGroups c
+            JOIN Users u ON c.user_id = u.id
+            WHERE c.group_id = $1 AND c.jenis_pesan = $2
+            ORDER BY c.created_at DESC
+            LIMIT 50
+        ) sub
+        ORDER BY sub.created_at ASC
     `;
     
     const result = await pool.query(query, [groupId, jenisPesan]);

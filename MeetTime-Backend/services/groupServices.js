@@ -103,7 +103,7 @@ export async function getUserGrup(userId) {
 
 export async function getMemberGrup(grupId) {
     const query = `
-        SELECT u.id, u.name, u.email, u.nim, gm.role, gm.joined_at
+        SELECT u.id, u.name, u.nim, gm.role, gm.joined_at
         FROM GroupMembers gm
         JOIN Users u ON gm.user_id = u.id
         WHERE gm.group_id = $1
@@ -203,7 +203,7 @@ export async function addMemberByNim({ groupId, adminId, targetNim }) {
 
 export async function cariMahasiswa(keyword) {
     const query = `
-        SELECT id, name, nim, email 
+        SELECT id, name, nim, jurusan 
         FROM Users 
         WHERE nim ILIKE $1 OR name ILIKE $1
         LIMIT 5

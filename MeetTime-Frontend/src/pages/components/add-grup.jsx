@@ -27,7 +27,7 @@ export function AddNewGrup() {
         const newGroup = await createGroup(formData);
 
         if (newGroup && newGroup.id) {
-            navigate(`/pages/groups/${newGroup.id}/add-member`);
+            navigate(`/groups/${newGroup.id}/add-member`);
         }
     };
 

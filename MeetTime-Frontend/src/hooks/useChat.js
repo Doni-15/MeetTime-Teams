@@ -7,7 +7,8 @@ export function useChat(groupId, jenisPesan = 'pesan') {
     const [loading, setLoading] = useState(false);
 
     const fetchChats = useCallback(async () => {
-        setLoading(true);
+        if (chats.length === 0) setLoading(true); 
+        
         try {
             const res = await chatService.getChats(groupId, jenisPesan);
             setChats(res.data || []);
@@ -18,6 +19,10 @@ export function useChat(groupId, jenisPesan = 'pesan') {
         }
     }, [groupId, jenisPesan]);
 
+    const addLocalChat = (newChatObj) => {
+        setChats((prevChats) => [...prevChats, newChatObj]);
+    };
+
     const sendMessage = async (pesan) => {
         if (!pesan.trim()) return;
 
@@ -26,10 +31,9 @@ export function useChat(groupId, jenisPesan = 'pesan') {
                 pesan, 
                 jenis: jenisPesan 
             });
-            
-            await fetchChats(); 
             return true;
-        } catch (err) {
+        } 
+        catch (err) {
             const msg = err.response?.data?.message || "Gagal mengirim pesan";
             toast.error(msg);
             return false;
@@ -40,6 +44,7 @@ export function useChat(groupId, jenisPesan = 'pesan') {
         chats, 
         loading, 
         fetchChats, 
-        sendMessage 
+        sendMessage,
+        addLocalChat
     };
 }

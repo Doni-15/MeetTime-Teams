@@ -1,6 +1,7 @@
+import GroupProtectedRoute from "./GroupProtected"
 import GuestRoute from "./GuestRoute"
 import ProtectedRoute from "./ProtectedRoute"
 
 export {
-    GuestRoute, ProtectedRoute
+    GuestRoute, ProtectedRoute, GroupProtectedRoute
 }

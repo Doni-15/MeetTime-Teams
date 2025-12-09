@@ -2,17 +2,23 @@ import { useEffect, useState, useRef } from 'react';
 import { PaperAirplaneIcon, MegaphoneIcon, UserCircleIcon } from '@heroicons/react/24/solid';
 import { useChat } from '../../../hooks/useChat'; 
 import api from '../../../config/api'; 
+import { toast } from 'react-hot-toast';
 
 export function ChatRoom({ groupId, onOpenAnnouncements }) {
-    const { chats, fetchChats, sendMessage } = useChat(groupId, 'pesan');
+    const { chats, fetchChats, sendMessage, addLocalChat } = useChat(groupId, 'pesan');
+    
     const [input, setInput] = useState("");
     const [myId, setMyId] = useState(null);
+    const [myName, setMyName] = useState("Saya"); 
+
+    const containerRef = useRef(null); 
 
     useEffect(() => {
         const getMe = async () => {
             try {
                 const res = await api.get('/auth/user');
                 setMyId(res.data.id);
+                setMyName(res.data.name); 
             } catch (err) {
                 console.error("Gagal load user", err);
             }
@@ -26,13 +32,54 @@ export function ChatRoom({ groupId, onOpenAnnouncements }) {
         return () => clearInterval(interval);
     }, [fetchChats]);
 
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 150;
+
+        if (isNearBottom || chats.length < 10) {
+            container.scrollTo({
+                top: container.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+    }, [chats]); 
 
     const handleSend = async (e) => {
         e.preventDefault();
-        if (!input.trim()) return;
+        const textToSend = input.trim();
+        if (!textToSend) return;
         
-        const success = await sendMessage(input);
-        if (success) setInput("");
+        setInput("");
+
+        const tempChat = {
+            id: Date.now(),
+            user_id: myId,
+            nama_pengirim: myName,
+            pesan: textToSend,
+            created_at: new Date().toISOString()
+        };
+
+        addLocalChat(tempChat);
+
+        setTimeout(() => {
+            const container = containerRef.current;
+            if (container) {
+                container.scrollTo({
+                    top: container.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }
+        }, 100);
+
+        try {
+            await sendMessage(textToSend);
+        } catch (err) {
+            console.error("Gagal kirim pesan", err);
+            toast.error("Gagal mengirim pesan");
+            setInput(textToSend);
+        }
     };
 
     return (
@@ -52,8 +99,10 @@ export function ChatRoom({ groupId, onOpenAnnouncements }) {
                 </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
-                
+            <div 
+                ref={containerRef} 
+                className="flex-1 overflow-y-auto p-4 min-h-90 max-h-90 space-y-4 custom-scrollbar scroll-smooth"
+            >
                 {chats.length === 0 && (
                     <div className="flex flex-col items-center justify-center mt-20 text-neutral/40 gap-2">
                         <div className="p-4 bg-white rounded-full shadow-sm">
@@ -71,7 +120,7 @@ export function ChatRoom({ groupId, onOpenAnnouncements }) {
                             <div className={`flex max-w-[85%] md:max-w-[70%] gap-2 ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
                                 {!isMe && (
                                     <div className="shrink-0 flex flex-col justify-end pb-1">
-                                        <div className="size-8 rounded-full bg-base-200 flex items-center justify-center text-neutral/50 border border-white shadow-sm">
+                                        <div className="size-8 rounded-full bg-netral-abu flex items-center justify-center text-base-100 border border-white shadow-sm">
                                             <UserCircleIcon className="size-6" />
                                         </div>
                                     </div>

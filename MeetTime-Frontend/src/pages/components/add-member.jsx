@@ -10,14 +10,14 @@ export function AddMemberGrup() {
     const { groupId } = useParams(); 
     const navigate = useNavigate();
     
-    const { 
-        addMember, 
-        fetchMembers, 
-        groupMembers, 
+    const {
+        addMember,
+        fetchMembers,
+        groupMembers,
         searchCandidate,
         searchResults,
         clearSearch,
-        loading 
+        loading
     } = useGroup();
 
     const [nim, setNim] = useState("");
