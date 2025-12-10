@@ -4,11 +4,12 @@ export async function buatAgendaBaru(req, res) {
     try {
         const userId = req.user.id;
         const data = req.body;
-        const { namaKegiatan, hari, jamMulai, jamSelesai } = data;
+        
+        const { namaKegiatan, hari, tanggal, jamMulai, jamSelesai } = data;
 
-        if (!namaKegiatan || !hari || !jamMulai || !jamSelesai) {
+        if (!namaKegiatan || !hari || !tanggal || !jamMulai || !jamSelesai) {
             return res.status(400).json({ 
-                message: "Data tidak lengkap (namaKegiatan, hari, jamMulai, jamSelesai wajib diisi)" 
+                message: "Data tidak lengkap (namaKegiatan, hari, tanggal, jamMulai, jamSelesai wajib diisi)" 
             });
         }
 

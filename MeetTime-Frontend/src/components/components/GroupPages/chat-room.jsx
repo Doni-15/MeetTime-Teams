@@ -12,6 +12,7 @@ export function ChatRoom({ groupId, onOpenAnnouncements }) {
     const [myName, setMyName] = useState("Saya"); 
 
     const containerRef = useRef(null); 
+    const inputRef = useRef(null);
 
     useEffect(() => {
         const getMe = async () => {
@@ -46,12 +47,30 @@ export function ChatRoom({ groupId, onOpenAnnouncements }) {
         }
     }, [chats]); 
 
+    const handleInputChange = (e) => {
+        setInput(e.target.value);
+        
+        e.target.style.height = 'auto'; 
+        e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSend(e);
+        }
+    };
+
     const handleSend = async (e) => {
         e.preventDefault();
         const textToSend = input.trim();
         if (!textToSend) return;
         
         setInput("");
+        
+        if (inputRef.current) {
+            inputRef.current.style.height = 'auto';
+        }
 
         const tempChat = {
             id: Date.now(),
@@ -114,7 +133,6 @@ export function ChatRoom({ groupId, onOpenAnnouncements }) {
 
                 {chats.map((chat) => {
                     const isMe = chat.user_id === myId;
-                    
                     return (
                         <div key={chat.id} className={`flex w-full ${isMe ? 'justify-end' : 'justify-start'}`}>
                             <div className={`flex max-w-[85%] md:max-w-[70%] gap-2 ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
@@ -158,19 +176,21 @@ export function ChatRoom({ groupId, onOpenAnnouncements }) {
             <div className="p-3 md:p-4 bg-white border-t border-base-200">
                 <form onSubmit={handleSend} className="flex gap-2 items-end">
                     <div className="flex-1 relative">
-                        <input 
-                            type="text" 
-                            className="w-full bg-base-200/50 border border-transparent text-custom-text rounded-2xl px-5 py-3 pr-10 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none text-sm transition-all placeholder:text-neutral/40"
+                        <textarea 
+                            ref={inputRef}
+                            rows={1}
+                            className="w-full bg-base-200/50 border border-transparent text-custom-text rounded-2xl px-5 py-3 pr-10 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none text-sm transition-all placeholder:text-neutral/40 resize-none overflow-hidden min-h-[44px]"
                             placeholder="Ketik pesan..."
                             value={input}
-                            onChange={(e) => setInput(e.target.value)}
+                            onChange={handleInputChange}
+                            onKeyDown={handleKeyDown}
                         />
                     </div>
                     
                     <button 
                         type="submit" 
                         disabled={!input.trim()}
-                        className="bg-primary text-white p-3 rounded-xl hover:bg-primary/90 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-primary/20 flex items-center justify-center"
+                        className="bg-primary text-white p-3 rounded-xl hover:bg-primary/90 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-primary/20 flex items-center justify-center shrink-0 h-[44px] w-[44px]"
                     >
                         <PaperAirplaneIcon className="size-5 -ml-0.5 mt-0.5 -rotate-45" />
                     </button>

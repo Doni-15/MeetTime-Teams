@@ -1,5 +1,6 @@
 import { PlusIcon, CalendarDaysIcon } from '@heroicons/react/24/outline';
 import { useState } from "react";
+import { toast } from 'react-hot-toast';
 
 import { useAgenda } from "../../hooks/useAgenda";
 import { KembaliDashboard, InputBox, SelectBox } from '../../components/components/GlobalComponents';
@@ -11,6 +12,7 @@ export function AgendaDinamis() {
     const [formData, setFormData] = useState({
         namaKegiatan: '',
         hari: '', 
+        tanggal: '',
         jamMulai: '', 
         jamSelesai: '',
     });
@@ -18,13 +20,25 @@ export function AgendaDinamis() {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+
+        if (name === 'tanggal' && value) {
+            const date = new Date(value);
+            const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+            const dayName = days[date.getDay()];
+            
+            setFormData(prev => ({ 
+                ...prev, 
+                [name]: value,
+                hari: dayName
+            }));
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!formData.namaKegiatan || !formData.hari || !formData.jamMulai || !formData.jamSelesai) {
-            alert("Mohon lengkapi data!");
+        if (!formData.namaKegiatan || !formData.hari || !formData.tanggal || !formData.jamMulai || !formData.jamSelesai) {
+            toast.error("Mohon lengkapi semua data!");
             return;
         }
 
@@ -34,6 +48,7 @@ export function AgendaDinamis() {
             setFormData({ 
                 namaKegiatan: '',
                 hari: '', 
+                tanggal: '',
                 jamMulai: '', 
                 jamSelesai: '', 
             });
@@ -64,20 +79,30 @@ export function AgendaDinamis() {
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                        
-                        <div className="md:col-span-6">
+                        <div className="md:col-span-12">
                             <InputBox 
                                 variant="soft" 
                                 judul="Nama Kegiatan" 
                                 name="namaKegiatan" 
-                                placeholder="Contoh: Rapat BEM / Gym"
+                                placeholder="Contoh: Rapat BEM / Gym / Kuliah Tambahan"
                                 value={formData.namaKegiatan} 
                                 onChange={handleChange} 
                                 autoFocus
                             />
                         </div>
 
-                        <div className="md:col-span-3">
+                        <div className="md:col-span-4">
+                            <InputBox 
+                                variant="soft" 
+                                type="date"
+                                judul="Tanggal Kegiatan" 
+                                name="tanggal" 
+                                value={formData.tanggal} 
+                                onChange={handleChange} 
+                            />
+                        </div>
+
+                        <div className="md:col-span-4">
                             <SelectBox 
                                 variant="soft" 
                                 judul="Hari" 
@@ -88,7 +113,7 @@ export function AgendaDinamis() {
                             />
                         </div>
 
-                        <div className="md:col-span-3 flex gap-3">
+                        <div className="md:col-span-4 flex gap-3">
                             <div className="w-1/2">
                                 <InputBox 
                                     judul="Mulai"
@@ -151,7 +176,7 @@ export function AgendaDinamis() {
                     {!loading && daftarAgenda.length === 0 && (
                         <div className="col-span-full py-12 flex flex-col items-center justify-center border-2 border-dashed border-base-200 rounded-3xl bg-base-100/40 text-white/60">
                             <CalendarDaysIcon className="size-10 mb-2 opacity-50"/>
-                            <p className="font-medium">Belum ada agenda minggu ini.</p>
+                            <p className="font-medium">Belum ada agenda yang dijadwalkan.</p>
                         </div>
                     )}
 

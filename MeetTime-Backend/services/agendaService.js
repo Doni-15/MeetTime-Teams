@@ -1,17 +1,19 @@
 import pool from '../config/db.js';
 
 export async function buatAgendaBaru(userId, data) {
-    const { namaKegiatan, hari, jamMulai, jamSelesai } = data;
+    const { namaKegiatan, hari, tanggal, jamMulai, jamSelesai } = data;
+    
     const query = `
-        INSERT INTO KegiatanDinamis (user_id, nama_kegiatan, nama_hari, waktu_mulai, waktu_selesai)
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING id, nama_kegiatan, nama_hari, waktu_mulai, waktu_selesai
+        INSERT INTO KegiatanDinamis (user_id, nama_kegiatan, nama_hari, tanggal, waktu_mulai, waktu_selesai)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING id, nama_kegiatan, nama_hari, tanggal, waktu_mulai, waktu_selesai
     `;
   
     const result = await pool.query(query, [
         userId,
         namaKegiatan,
         hari,
+        tanggal,
         jamMulai,
         jamSelesai 
     ]);
@@ -21,6 +23,7 @@ export async function buatAgendaBaru(userId, data) {
         id: row.id,
         namaKegiatan: row.nama_kegiatan,
         hari: row.nama_hari,
+        tanggal: row.tanggal,
         jamMulai: row.waktu_mulai,
         jamSelesai: row.waktu_selesai
     };
@@ -32,11 +35,13 @@ export async function getAgendaUser(userId) {
             id,
             nama_kegiatan,
             nama_hari,
+            tanggal,
             waktu_mulai,
             waktu_selesai
         FROM KegiatanDinamis
-        WHERE user_id = $1
-        ORDER BY nama_hari DESC
+        WHERE user_id = $1 
+        AND deleted_at IS NULL 
+        ORDER BY tanggal ASC, waktu_mulai ASC
     `;
 
     const result = await pool.query(query, [userId]);
@@ -45,6 +50,7 @@ export async function getAgendaUser(userId) {
         id: row.id,
         namaKegiatan: row.nama_kegiatan,
         hari: row.nama_hari,
+        tanggal: row.tanggal,
         jamMulai: row.waktu_mulai,
         jamSelesai: row.waktu_selesai
     }));
@@ -64,4 +70,25 @@ export async function deleteAgendaUser(userId, kegiatanId) {
     }
 
     return result.rows[0];
+}
+
+export async function autoSoftDeleteExpired() {
+    const query = `
+        UPDATE KegiatanDinamis
+        SET deleted_at = NOW()
+        WHERE (tanggal + waktu_selesai) < NOW() 
+        AND deleted_at IS NULL
+    `;
+    
+    await pool.query(query);
+}
+
+export async function autoHardDeleteTrash() {
+    const query = `
+        DELETE FROM KegiatanDinamis
+        WHERE deleted_at IS NOT NULL
+        AND deleted_at < NOW() - INTERVAL '1 DAY'
+    `;
+
+    await pool.query(query);
 }

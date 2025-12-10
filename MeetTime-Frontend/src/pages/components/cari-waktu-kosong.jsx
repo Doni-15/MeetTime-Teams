@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeftIcon, CalendarDaysIcon, XMarkIcon, UserIcon, CheckCircleIcon } from '@heroicons/react/24/solid';
-import { ClockIcon } from '@heroicons/react/24/outline'; // Icon outline
+import { ClockIcon } from '@heroicons/react/24/outline';
 
 import { KembaliDashboard } from '../../components/components/GlobalComponents';
 import { useGroup } from '../../hooks/useGroup'; 
@@ -28,7 +28,7 @@ export function CariWaktuKosong() {
                     setScheduleData(res.schedules || []);
                     setTotalMembers(res.total_members || 0);
                 } catch (err) {
-                    console.error("Gagal memuat jadwal:", err);
+                    
                 } finally {
                     setLoading(false);
                 }
