@@ -16,5 +16,10 @@ export const agendaService = {
     delete: async (id) => {
         const response = await api.delete(`${AGENDA_API_BASE}delete-agenda/${id}`);
         return response.data;
+    },
+
+    getHistory: async () => {
+        const response = await api.get(`${AGENDA_API_BASE}history`);
+        return response.data;
     }
 };

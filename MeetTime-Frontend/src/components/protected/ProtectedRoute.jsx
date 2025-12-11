@@ -9,7 +9,7 @@ export default function ProtectedRoute({ children, user, loading }){
         );
     } 
 
-    if (!user) {
+    if (!user) { 
         return <Navigate to="/autentifikasi/sign-in" replace />;
     }
 

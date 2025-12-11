@@ -58,3 +58,14 @@ export async function deleteAgenda(req, res) {
         });
     }
 }
+
+export async function getDeletedHistory(req, res) {
+    try {
+        const userId = req.user.id;
+        const data = await agendaService.getSoftDeletedAgenda(userId);
+        res.json(data);
+    } 
+    catch (error) {
+        return res.status(500).json({ message: "Gagal memuat notifikasi" });
+    }
+}

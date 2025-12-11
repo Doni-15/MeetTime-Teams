@@ -7,6 +7,7 @@ export function useAgenda() {
     const [daftarAgenda, setDaftarAgenda] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [deletedHistory, setDeletedHistory] = useState([]); 
 
     const fetchAgenda = useCallback(async () => {
         setLoading(true);
@@ -20,6 +21,14 @@ export function useAgenda() {
         } 
         finally {
             setLoading(false);
+        }
+    }, []);
+
+    const fetchHistory = useCallback(async () => {
+        try {
+            const data = await agendaService.getHistory();
+            setDeletedHistory(data);
+        } catch (err) {
         }
     }, []);
 
@@ -71,7 +80,9 @@ export function useAgenda() {
 
         try {
             await agendaService.delete(id);
+            
             setDaftarAgenda(prev => prev.filter(agenda => agenda.id !== id));
+            fetchHistory(); 
 
             toast.success('Agenda berhasil dihapus!', {
                 id: loadingToast,
@@ -98,6 +109,8 @@ export function useAgenda() {
         fetchAgenda,
         addAgenda,
         deleteAgenda,
-        refresh: fetchAgenda
+        refresh: fetchAgenda,
+        deletedHistory,
+        fetchHistory
     };
 }

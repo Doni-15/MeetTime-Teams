@@ -92,3 +92,17 @@ export async function autoHardDeleteTrash() {
 
     await pool.query(query);
 }
+
+export async function getSoftDeletedAgenda(userId) {
+    const query = `
+        SELECT id, nama_kegiatan, nama_hari, tanggal, deleted_at
+        FROM KegiatanDinamis
+        WHERE user_id = $1
+        AND deleted_at IS NOT NULL
+        ORDER BY deleted_at DESC
+        LIMIT 10
+    `;
+
+    const result = await pool.query(query, [userId]);
+    return result.rows;
+}

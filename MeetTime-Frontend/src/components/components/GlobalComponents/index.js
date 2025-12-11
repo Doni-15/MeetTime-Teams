@@ -6,7 +6,9 @@ import { SignOut } from "./SignOut"
 import Header from "./header"
 import MainLayout from "./main"
 import Footer from "./footer"
+import { NotificationList } from "./NotificationDropdown"
 
 export {
     InputBox, Header, DetailUser, Footer, KembaliDashboard, SelectBox, TextAreaBox, SignOut, MainLayout,
+    NotificationList
 }

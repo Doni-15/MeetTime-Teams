@@ -3,7 +3,7 @@ import { useParams, Navigate, Outlet } from "react-router-dom";
 import { groupService } from "../../services/groupService";
 import { toast } from "react-hot-toast";
 
-export default function GroupProtectedRoute() {
+export default function GroupProtectedRoute(){
     const { groupId } = useParams();
     const [isMember, setIsMember] = useState(null);
 
@@ -28,15 +28,16 @@ export default function GroupProtectedRoute() {
         };
 
         if (groupId) {
-        checkMembership();
+            checkMembership();
         }
     }, [groupId]);
 
+
     if (isMember === null) {
         return (
-        <div className="flex h-screen items-center justify-center bg-base-100">
-            <span className="loading loading-spinner loading-lg text-primary"></span>
-        </div>
+            <div className="flex h-screen items-center justify-center bg-base-100">
+                <span className="loading loading-spinner loading-lg text-primary"></span>
+            </div>
         );
     }
 

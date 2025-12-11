@@ -125,26 +125,24 @@ export function useGroup() {
         try {
             const response = await groupService.searchUser(keyword);
             
-            // Logika Penanganan Data yang Lebih Kuat:
             if (Array.isArray(response)) {
-                // Kasus 1: Backend langsung mengembalikan array [user1, user2]
                 setSearchResults(response);
-            } else if (response.data && Array.isArray(response.data)) {
-                // Kasus 2: Backend mengembalikan { data: [user1, user2] }
+            } 
+            else if (response.data && Array.isArray(response.data)) {
                 setSearchResults(response.data);
-            } else if (response.users && Array.isArray(response.users)) {
-                // Kasus 3: Backend mengembalikan { users: [user1, user2] }
+            } 
+            else if (response.users && Array.isArray(response.users)) {
                 setSearchResults(response.users);
-            } else {
-                // Jika format tidak dikenali, set kosong agar tidak crash
+            } 
+            else {
                 setSearchResults([]);
             }
-        } catch (err) {
+        } 
+        catch (err) {
             console.error("Gagal mencari user", err);
             setSearchResults([]);
         }
     };
-    // ------------------------------
 
     const deleteGroup = async (groupId, navigate) => {
         const result = await Swal.fire({
