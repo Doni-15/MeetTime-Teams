@@ -182,11 +182,11 @@ export function AddMemberGrup() {
 
                 <div className="mt-8 pt-4 border-t border-base-200 flex justify-end">
                     <button 
-                        onClick={() => navigate(`/pages/groups/${groupId}`)}
+                        onClick={() => navigate(`/groups/${groupId}`)}
                         className="w-full md:w-auto bg-utama hover:bg-neutral text-white font-bold text-base px-10 py-3 rounded-xl shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                     >
                         <CheckIcon className="size-5" />
-                        Selesai & Lihat Grup
+                        Selesai & Lihat Grup 
                     </button>
                 </div>
             </section>
