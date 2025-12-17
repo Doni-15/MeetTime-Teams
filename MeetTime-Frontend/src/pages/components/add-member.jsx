@@ -1,5 +1,5 @@
 import { UserPlusIcon, CheckIcon, UserIcon, MagnifyingGlassIcon, UserGroupIcon } from '@heroicons/react/24/outline';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { useGroup } from '../../hooks/useGroup';
@@ -21,7 +21,7 @@ export function AddMemberGrup() {
     } = useGroup();
 
     const [nim, setNim] = useState("");
-    const debouncedNim = useDebounce(nim, 500);
+    const debouncedNim = useDebounce(nim, 100);
 
     useEffect(() => {
         if (groupId) fetchMembers(groupId);
@@ -34,6 +34,18 @@ export function AddMemberGrup() {
             clearSearch();
         }
     }, [debouncedNim]);
+
+    const sortedResults = useMemo(() => {
+        if (!searchResults) return [];
+        return [...searchResults].sort((a, b) => {
+            const isMemberA = groupMembers.some(m => m.nim === a.nim);
+            const isMemberB = groupMembers.some(m => m.nim === b.nim);
+            if (isMemberA && !isMemberB) return 1;
+            if (!isMemberA && isMemberB) return -1;
+            
+            return 0;
+        });
+    }, [searchResults, groupMembers]);
 
     const handleAdd = async (targetNim) => {
         const success = await addMember(groupId, targetNim);
@@ -77,24 +89,30 @@ export function AddMemberGrup() {
                 </form>
 
                 {nim && (
-                    <div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                        <p className="text-xs font-bold text-neutral/50 uppercase tracking-wider mb-3 ml-1">
-                            Hasil Pencarian
-                        </p>
+                    <div className="mt-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="flex items-center justify-between mb-3 px-1">
+                            <p className="text-xs font-bold text-neutral/50 uppercase tracking-wider">
+                                Hasil Pencarian
+                            </p>
+                            <button onClick={() => {setNim(""); clearSearch()}} className="text-xs font-bold text-primary hover:underline">
+                                Tutup
+                            </button>
+                        </div>
 
-                        {searchResults.length === 0 ? (
+                        {sortedResults.length === 0 ? (
                             <div className="text-center py-8 text-neutral/50 bg-base-400/30 rounded-xl border border-dashed border-base-200">
                                 <p className="italic text-sm">Tidak ditemukan mahasiswa dengan kata kunci "{nim}"</p>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 gap-3">
-                                {searchResults.map((user) => {
+                            <div className="grid grid-cols-1 gap-3 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
+                                {sortedResults.map((user) => {
                                     const isAlreadyMember = groupMembers.some(m => m.nim === user.nim);
-
                                     return (
-                                        <div key={user.id} className="flex flex-col sm:flex-row sm:items-center justify-between bg-white border border-base-200 p-4 rounded-xl hover:border-primary/50 hover:shadow-md transition-all gap-4">
+                                        <div key={user.id} className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl transition-all gap-4 border
+                                            ${isAlreadyMember ? 'bg-success/5 border-success/20 order-last' : 'bg-white border-base-200 hover:border-primary/50 hover:shadow-md order-first'}
+                                        `}>
                                             <div className="flex items-center gap-4">
-                                                <div className="bg-base-200 p-3 rounded-full text-neutral/60">
+                                                <div className={`p-3 rounded-full ${isAlreadyMember ? 'bg-success/10 text-success' : 'bg-base-200 text-neutral/60'}`}>
                                                     <UserIcon className="size-6" />
                                                 </div>
                                                 <div className="flex flex-col">
@@ -111,7 +129,7 @@ export function AddMemberGrup() {
                                             </div>
 
                                             {isAlreadyMember ? (
-                                                <span className="flex items-center justify-center gap-1 text-success bg-success/10 px-4 py-2 rounded-xl text-sm font-bold border border-success/20 select-none w-full sm:w-auto">
+                                                <span className="flex items-center justify-center gap-1 text-success bg-white px-4 py-2 rounded-xl text-sm font-bold border border-success/20 select-none w-full sm:w-auto shadow-sm opacity-80">
                                                     <CheckIcon className="size-5" />
                                                     Anggota
                                                 </span>
@@ -144,7 +162,7 @@ export function AddMemberGrup() {
                         <div className="p-2 bg-secondary/10 rounded-lg text-secondary">
                             <UserGroupIcon className="size-6" />
                         </div>
-                        <h2 className="text-lg font-bold text-utama">Anggota Grup</h2>
+                        <h2 className="text-lg font-bold text-utama">Anggota Grup Saat Ini</h2>
                     </div>
                     <span className="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-sm font-bold">
                         {groupMembers.length} Orang
@@ -160,9 +178,9 @@ export function AddMemberGrup() {
                     )}
                     
                     {groupMembers.map((member) => (
-                        <div key={member.id} className="group flex justify-between items-center p-3 rounded-xl bg-base-400/30 transition-colors border border-base-200">
+                        <div key={member.id} className="group flex justify-between items-center p-3 rounded-xl bg-base-400/30 transition-colors border border-base-200 hover:bg-white hover:shadow-sm">
                             <div className="flex items-center gap-3">
-                                <div className="size-10 rounded-full flex items-center justify-center text-sm font-bold bg-white transition-colors border border-base-200 text-utama">
+                                <div className="size-10 rounded-full flex items-center justify-center text-sm font-bold bg-white transition-colors border border-base-200 text-utama group-hover:bg-primary/10 group-hover:text-primary">
                                     {member.name.charAt(0).toUpperCase()}
                                 </div>
                                 <div className="flex flex-col">
@@ -190,7 +208,6 @@ export function AddMemberGrup() {
                     </button>
                 </div>
             </section>
-
         </div>
     );
 }
