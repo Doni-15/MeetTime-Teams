@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from 'react-hot-toast';
 
 import { useAgenda } from "../../hooks/useAgenda";
-import { KembaliDashboard, InputBox, SelectBox } from '../../components/components/GlobalComponents';
+import { KembaliDashboard, InputBox, SelectBox, JadwalSkeleton } from '../../components/components/GlobalComponents';
 import { CardAgenda } from '../../components/components/InputAgenda';
 
 export function AgendaDinamis() {
@@ -167,10 +167,12 @@ export function AgendaDinamis() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {loading && daftarAgenda.length === 0 && (
-                        <div className="col-span-full py-12 flex flex-col items-center justify-center text-neutral/40">
-                            <span className="loading loading-spinner loading-md mb-2"></span>
-                            <p>Memuat data...</p>
-                        </div>
+                        <>
+                            <JadwalSkeleton />
+                            <JadwalSkeleton />
+                            <JadwalSkeleton />
+                            <JadwalSkeleton />
+                        </>
                     )}
 
                     {!loading && daftarAgenda.length === 0 && (

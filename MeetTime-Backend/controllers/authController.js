@@ -45,8 +45,8 @@ export async function login(req, res) {
         }
 
         const user = await authService.loginUser(nim, password);
-
         const token = generateToken(user.id);
+
         res.cookie('token', token, cookieOptions);
 
         res.status(200).json({

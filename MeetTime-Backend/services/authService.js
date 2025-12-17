@@ -24,16 +24,15 @@ export async function registerUser({ name, jurusan, nim, password }) {
 // Buat data user bisa login
 export async function loginUser(nim, password) {
     const user = await pool.query("SELECT * FROM Users WHERE nim = $1", [nim]);
+    const userData = user.rows[0];
+    let isMatch = false;
 
-    if (user.rows.length === 0) {
-        throw new Error("NIM tidak ditemukan");
+    if (userData) {
+        isMatch = await bcrypt.compare(password, userData.password);
     }
 
-    const userData = user.rows[0];
-    const isMatch = await bcrypt.compare(password, userData.password);
-
-    if (!isMatch) {
-        throw new Error("Password salah");
+    if (!userData || !isMatch) {
+        throw new Error("NIM atau Password salah"); 
     }
 
     return {

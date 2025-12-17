@@ -1,6 +1,7 @@
 import { MinusIcon, CalendarDaysIcon, ClockIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useKrs } from "../../../hooks/useKrs";
 import { useAgenda } from "../../../hooks/useAgenda";
+import { DashboardSkeleton } from '../GlobalComponents';
 
 export function JadwalSaya() {
     const { daftarKrs, loading: loadingKrs } = useKrs();
@@ -35,10 +36,7 @@ export function JadwalSaya() {
 
             <div className="flex-1 min-h-[300px] relative">
                 {isLoading && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 z-10">
-                        <span className="loading loading-spinner loading-lg text-primary"></span>
-                        <p className="text-sm font-medium text-neutral/50 mt-3">Sinkronisasi jadwal...</p>
-                    </div>
+                    <DashboardSkeleton />
                 )}
 
                 {!isLoading && (

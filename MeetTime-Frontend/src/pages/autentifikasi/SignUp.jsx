@@ -1,25 +1,24 @@
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
 import { useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import { InputBox } from '../../components/components/GlobalComponents';
 import { SideBarAuht } from '../../components/components/AuthComponents';
-import API from '../../config/api';
+import { useAuth } from '../../hooks/useAuth';
 
 const maxNIM = 20;
 const minPassword = 6;
 
 export function SignUp() {
     const navigate = useNavigate();
+    const { register, loading, error: hookError } = useAuth();
+    
     const [form, setForm] = useState({
         name: "",
-        jurusan: "",
-        nim: "",
+        jurusan: "", 
+        nim: "", 
         password: "",
     });
 
-    const [error, setError] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+    const [validationError, setValidationError] = useState("");
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -34,45 +33,27 @@ export function SignUp() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
+        setValidationError("");
 
         if (!form.name || !form.jurusan || !form.nim || !form.password) {
-            setError("Semua form wajib diisi!");
+            setValidationError("Semua form wajib diisi!");
             return;
         }
 
         if (form.nim.length > maxNIM) {
-            setError(`NIM tidak boleh lebih dari ${maxNIM} karakter!`);
+            setValidationError(`NIM tidak boleh lebih dari ${maxNIM} karakter!`);
             return;
         }
 
         if (form.password.length <= minPassword) {
-            setError(`Password harus lebih dari ${minPassword} karakter!`);
+            setValidationError(`Password harus lebih dari ${minPassword} karakter!`);
             return;
         }
 
-        setIsLoading(true);
-
-        try {
-            await API.post("/auth/register", form);
-            toast.success('Akun berhasil terdaftar!');
-            navigate("/autentifikasi/sign-in", { replace: true });
-
-        }
-        catch (err) {
-            console.error("Register Error:", err);
-
-            if (!err.response) {
-                setError("Gagal terhubung ke server (Cek koneksi internet)");
-            }
-            else {
-                setError(err.response?.data?.message || "Gagal mendaftar");
-            }
-        }
-        finally {
-            setIsLoading(false);
-        }
+        await register(form);
     };
+
+    const displayError = validationError || hookError;
 
     return (
         <main className="min-h-screen w-full bg-base-400 flex items-center justify-center p-4 md:p-6 font-sans">
@@ -87,7 +68,7 @@ export function SignUp() {
                             subTitle="Masuk kembali untuk mengakses dashboard anda."
                             buttonText="Sign In"
                             buttonLink="/autentifikasi/sign-in"
-                            navigate={navigate}
+                            navigate={navigate} 
                             tombolKiri={true}
                         />
                     </div>
@@ -142,21 +123,21 @@ export function SignUp() {
                             onChange={handleChange}
                         />
 
-                        {error && (
+                        {displayError && (
                             <div
                                 role="alert"
                                 className="flex flex-col text-sm bg-error/10 border border-error text-error px-4 py-3 rounded-xl animate-pulse mt-2"
                             >
                                 <strong className="font-bold">Perhatian:</strong>
-                                <span>{error}</span>
+                                <span>{displayError}</span>
                             </div>
                         )}
 
                         <div className='mt-6'>
                             <SideBarAuht
-                                buttonText={isLoading ? "Sedang Mendaftar..." : "Daftar Sekarang"}
+                                buttonText={loading ? "Sedang Mendaftar..." : "Daftar Sekarang"}
                                 tombolKiri={false}
-                                onClick={isLoading ? undefined : handleSubmit}
+                                onClick={loading ? undefined : handleSubmit}
                             />
                         </div>
                     </form>

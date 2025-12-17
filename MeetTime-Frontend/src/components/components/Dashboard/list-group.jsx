@@ -1,18 +1,27 @@
 import { ArrowRightIcon, UserGroupIcon, PlusCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { useGroup } from '../../../hooks/useGroup';
-import { InputBox } from '../../components/GlobalComponents'; 
+import { InputBox, ListGroupSkeleton } from '../../components/GlobalComponents'; 
 
 export function ListGroup() {
     const { myGroups, loading, joinGroup } = useGroup();
     const safeGroups = Array.isArray(myGroups) ? myGroups : [];
+    const navigate = useNavigate();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [kodeUndangan, setKodeUndangan] = useState("");
     const [isJoining, setIsJoining] = useState(false);
+    const [navigatingId, setNavigatingId] = useState(null);
+
+    const handleGroupClick = (groupId) => {
+        setNavigatingId(groupId); 
+        setTimeout(() => {
+            navigate(`/groups/${groupId}`);
+        }, 500); 
+    };
 
     const formatRole = (role) => {
         if (!role || typeof role !== 'string') return '-';
@@ -58,41 +67,46 @@ export function ListGroup() {
                 </div>
 
                 <section className='flex-1 overflow-y-auto hide-scrollbar flex flex-col gap-3'>
-                    
                     {loading && (
-                        <div className="flex flex-col items-center justify-center h-full text-neutral/40 animate-pulse">
-                            <span className="loading loading-spinner loading-md mb-2"></span>
-                            <p className="text-xs font-medium">Menyinkronkan data...</p>
-                        </div>
+                        <ListGroupSkeleton />
                     )}
 
                     {!loading && safeGroups.length > 0 && (
                         safeGroups.map((item, index) => (
-                            <Link key={item?.id || index} to={`/groups/${item?.id}`}>
-                                <div className="group w-full p-4 rounded-xl border border-transparent bg-base-400/30 cursor-pointer transition-all duration-300 ease-out
-                                    hover:bg-white hover:border-primary/20 hover:shadow-md hover:scale-[1.01]">
-                                    
-                                    <div className="flex justify-between items-center">
-                                        <div className='flex flex-col gap-1'>
-                                            <h3 className="font-bold text-base text-custom-text line-clamp-1 group-hover:text-primary transition-colors">
-                                                {item?.nama_group || "Tanpa Nama"}
-                                            </h3>
-                                            
-                                            <div className="flex items-center gap-2">
-                                                <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider
-                                                    ${item?.role === 'admin' 
-                                                        ? 'bg-orange-100 text-orange-600 border border-orange-200' 
-                                                        : 'bg-blue-100 text-blue-600 border border-blue-200'
-                                                    }`}>
-                                                    {formatRole(item?.role)}
-                                                </span>
-                                            </div>
-                                        </div>
+                            <div 
+                                key={item?.id || index} 
+                                onClick={() => !navigatingId && handleGroupClick(item?.id)}
+                                className={`group w-full p-4 rounded-xl border bg-base-400/30 transition-all duration-300 ease-out
+                                    ${navigatingId === item?.id 
+                                        ? 'border-primary bg-primary/5 cursor-wait scale-[0.98]'
+                                        : 'border-transparent cursor-pointer hover:border-primary/20 hover:shadow-md hover:scale-[1.01]'
+                                    }`}
+                            >
+                                <div className="flex justify-between items-center">
+                                    <div className='flex flex-col gap-1'>
+                                        <h3 className={`font-bold text-base line-clamp-1 transition-colors 
+                                            ${navigatingId === item?.id ? 'text-primary' : 'text-custom-text group-hover:text-primary'}`}>
+                                            {item?.nama_group || "Tanpa Nama"}
+                                        </h3>
                                         
-                                        <ArrowRightIcon className="size-5 text-neutral/40 group-hover:text-primary group-hover:translate-x-1 transition-all duration-300" />
+                                        <div className="flex items-center gap-2">
+                                            <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider
+                                                ${item?.role === 'admin' 
+                                                    ? 'bg-orange-100 text-orange-600 border border-orange-200' 
+                                                    : 'bg-blue-100 text-blue-600 border border-blue-200'
+                                                }`}>
+                                                {formatRole(item?.role)}
+                                            </span>
+                                        </div>
                                     </div>
+                                    
+                                    {navigatingId === item?.id ? (
+                                        <span className="loading loading-spinner loading-sm text-primary"></span>
+                                    ) : (
+                                        <ArrowRightIcon className="size-5 text-neutral/40 group-hover:text-primary group-hover:translate-x-1 transition-all duration-300" />
+                                    )}
                                 </div>
-                            </Link>
+                            </div>
                         ))
                     )}
 

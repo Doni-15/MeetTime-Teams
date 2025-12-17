@@ -222,3 +222,22 @@ export async function getGroupSchedules(req, res) {
         res.status(500).json({ message: error.message });
     }
 }
+
+export async function leaveGroup(req, res) {
+    try {
+        const { groupId } = req.params;
+        const userId = req.user.id;
+
+        await groupService.leaveGroup({ groupId, userId });
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Berhasil keluar dari grup'
+        });
+
+    } catch (error) {
+        res.status(400).json({
+            message: error.message || "Gagal keluar grup"
+        });
+    }
+}

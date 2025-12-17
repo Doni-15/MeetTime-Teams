@@ -1,35 +1,21 @@
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import api from "../../../config/api";
+import { useAuth } from '../../../hooks/useAuth';
 
 export function SignOut({ setUser }) {
-    const navigate = useNavigate();
+    const { logout } = useAuth();
 
     const handleLogout = async () => {
-        try {
-            await api.post("/auth/logout");
-            
-            if (setUser) {
-                setUser(null);
-            }
-            
-            toast.success("Logout berhasil!");
-            navigate("/autentifikasi/sign-in", { replace: true });
-        } 
-        catch (error) {
-            console.error("Logout error:", error);
-            if (setUser) {
-                setUser(null);
-            }
-            navigate("/autentifikasi/sign-in");
+        await logout();
+        
+        if (setUser) {
+            setUser(null);
         }
     };
     
     return (
         <button 
             onClick={handleLogout}
-            className="group w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-error/10 active:scale-[0.98]"
+            className="relative z-[9999] group w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-error/10 active:scale-[0.98]"
             type="button"
         >
             <div className="flex items-center justify-center size-9 rounded-full bg-error/10 text-error group-hover:bg-error group-hover:text-white transition-colors duration-200 shadow-sm">

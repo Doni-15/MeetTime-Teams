@@ -14,7 +14,6 @@ export function useGroup() {
         setLoading(true);
         try {
             const response = await groupService.getMyGroups();
-            // Handle jika response langsung array atau dibungkus key 'groups'
             setMyGroups(response.groups || response); 
             setError(null);
         } catch (err) {
@@ -28,10 +27,8 @@ export function useGroup() {
         setLoading(true);
         try {
             const response = await groupService.getMembers(groupId);
-            // Handle jika response langsung array atau dibungkus key 'members'
             setGroupMembers(response.members || response);
         } catch (err) {
-            // silent error
         } finally {
             setLoading(false);
         }
@@ -116,7 +113,6 @@ export function useGroup() {
         }
     };
 
-    // --- BAGIAN YANG DIPERBAIKI ---
     const searchCandidate = async (keyword) => {
         if (!keyword) {
             setSearchResults([]); 
@@ -175,6 +171,39 @@ export function useGroup() {
         }
     };
 
+    const leaveGroup = async (groupId, navigate) => {
+        const result = await Swal.fire({
+            title: 'Keluar dari Grup?',
+            text: "Anda tidak akan bisa mengakses konten grup ini lagi.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Keluar',
+            cancelButtonText: 'Batal'
+        });
+
+        if (!result.isConfirmed) return;
+
+        const loadingToast = toast.loading('Sedang proses keluar...');
+        setLoading(true);
+
+        try {
+            await groupService.leave(groupId); 
+            toast.success('Berhasil keluar dari grup!', { id: loadingToast });
+            await fetchMyGroups(); 
+            
+            if (navigate) 
+                navigate('/pages/dashboard');
+            
+        } catch (err) {
+            const msg = err.response?.data?.message || "Gagal keluar dari grup";
+            toast.error(msg, { id: loadingToast });
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const clearSearch = () => setSearchResults([]);
 
     useEffect(() => {
@@ -195,6 +224,7 @@ export function useGroup() {
         addMember,
         searchCandidate,
         clearSearch,
-        deleteGroup
+        deleteGroup,
+        leaveGroup
     };
 }

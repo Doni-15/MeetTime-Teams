@@ -1,8 +1,8 @@
 import { PlusIcon, BookOpenIcon } from '@heroicons/react/24/outline';
 import { useState } from "react";
 
-import { KembaliDashboard, SelectBox, InputBox } from '../../components/components/GlobalComponents';
-import { CardKrs } from '../../components/components/InputKrs'
+import { KembaliDashboard, SelectBox, InputBox, JadwalSkeleton } from '../../components/components/GlobalComponents';
+import { CardKrs } from '../../components/components/InputKrs';
 import { useKrs } from "../../hooks/useKrs";
 
 export function InputKrs() { 
@@ -43,7 +43,7 @@ export function InputKrs() {
     const opsiHari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
     return(
-        <div className="w-full max-w-5xl mx-auto flex flex-col gap-8">
+        <div className="w-full max-w-5xl mx-auto flex flex-col gap-8 pb-10">
             <div className="flex flex-col gap-2">
                 <KembaliDashboard 
                     judul="Input Jadwal KRS" 
@@ -141,14 +141,16 @@ export function InputKrs() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {loading && daftarKrs.length === 0 && (
-                        <div className="col-span-full py-12 flex flex-col items-center justify-center text-neutral/40">
-                            <span className="loading loading-spinner loading-md mb-2"></span>
-                            <p>Memuat data...</p>
-                        </div>
+                        <>
+                            <JadwalSkeleton />
+                            <JadwalSkeleton />
+                            <JadwalSkeleton />
+                            <JadwalSkeleton />
+                        </>
                     )}
 
                     {!loading && daftarKrs.length === 0 && (
-                        <div className="col-span-full py-12 flex flex-col items-center justify-center border-2 border-dashed border-base-200 rounded-3xl bg-base-100/40 text-white/60">
+                        <div className="col-span-full py-12 flex flex-col items-center justify-center border-2 border-dashed border-base-200/30 rounded-3xl bg-base-100/10 text-white/60 backdrop-blur-sm">
                             <BookOpenIcon className="size-10 mb-2 opacity-50"/>
                             <p className="font-medium">Belum ada jadwal yang diinput.</p>
                         </div>

@@ -1,71 +1,14 @@
+import { useState, useRef, useEffect } from "react";
 import { LogoBesar } from "../../../assets";
-import { useState, useEffect, useRef } from "react";
-import { BellIcon } from "@heroicons/react/24/outline";
-
-import { useAgenda } from "@/hooks/useAgenda"; 
 import { DetailUser } from "./detail-user";
-import { NotificationList } from "./NotificationDropdown";
 
 export default function Header({ user, setUser }) {
     const [openUser, setOpenUser] = useState(false);
-    const [openNotif, setOpenNotif] = useState(false);
-    const [hasUnread, setHasUnread] = useState(false);
-    const prevNotifCount = useRef(0);
-    const { deletedHistory, fetchHistory } = useAgenda();
-    const [displayList, setDisplayList] = useState([]);
-
-    const [nama, setNama] = useState("");
-    const notifRef = useRef(null);
+    
     const maxNama = 22;
-
-    useEffect(() => {
-        fetchHistory();
-    }, [fetchHistory]);
-
-    useEffect(() => {
-        setDisplayList(deletedHistory);
-
-        if (deletedHistory.length > prevNotifCount.current) {
-            setHasUnread(true);
-        }
-        prevNotifCount.current = deletedHistory.length;
-    }, [deletedHistory]);
-
-    useEffect(() => {
-        if (user?.name) {
-            setNama(user.name.length > maxNama
-                ? user.name.slice(0, maxNama) + "..."
-                : user.name
-            );
-        }
-    }, [user]);
-
-    useEffect(() => {
-        function handleClickOutside(event) {
-            if (notifRef.current && !notifRef.current.contains(event.target)) {
-                setOpenNotif(false);
-                setOpenUser(false);
-            }
-        }
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-
-    }, [notifRef]);
-
-    const handleNotifClick = () => {
-        setOpenNotif(!openNotif);
-        setOpenUser(false);
-
-        if (!openNotif) {
-            fetchHistory();
-            setHasUnread(false);
-        }
-    };
-
-    const handleDeleteItem = (id) => {
-        setDisplayList(prev => prev.filter(item => item.id !== id));
-    };
+    const nama = user?.name 
+        ? (user.name.length > maxNama ? user.name.slice(0, maxNama) + "..." : user.name) 
+        : "";
 
     return (
         <>
@@ -74,28 +17,9 @@ export default function Header({ user, setUser }) {
                     <img src={LogoBesar} alt="Logo Meet Time" className="h-20 w-auto object-contain" />
                 </div>
 
-                <div className="flex items-center gap-4 md:gap-6" ref={notifRef}>
-                    <div className="relative">
-                        <button 
-                            onClick={handleNotifClick}
-                            className="relative p-2.5 rounded-full text-white/80 hover:bg-white/10 hover:text-white transition-all active:scale-95 outline-none"
-                        >
-                            <BellIcon className="size-6 md:size-7" />
-                            
-                            {hasUnread && displayList.length > 0 && (
-                                <span className="absolute top-2 right-2.5 flex h-2.5 w-2.5">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-error border border-utama"></span>
-                                </span>
-                            )}
-                        </button>
-                    </div>
-
+                <div className="flex items-center gap-4 md:gap-6">
                     <div
-                        onClick={() => {
-                            setOpenUser(!openUser);
-                            setOpenNotif(false);
-                        }}
+                        onClick={() => setOpenUser(!openUser)}
                         className="group flex items-center gap-3 bg-netral-putih px-4 py-2 md:px-6 md:py-2.5 rounded-xl cursor-pointer shadow-lg hover:bg-gray-100 hover:scale-[1.02] active:scale-95 transition-all duration-300 ease-out select-none"
                     >
                         <div className="flex flex-col text-right">
@@ -125,13 +49,13 @@ export default function Header({ user, setUser }) {
             </header>
 
             <div className="h-[80px] w-full bg-base-400"></div>
-            <DetailUser user={user} setUser={setUser} isOpen={openUser} />
-            {openNotif && (
-                <NotificationList 
-                    data={displayList} 
-                    onDeleteItem={handleDeleteItem} 
-                />
-            )}
+            
+            <DetailUser 
+                user={user} 
+                setUser={setUser} 
+                isOpen={openUser} 
+                onClose={() => setOpenUser(false)} 
+            />
         </>
     );
 }

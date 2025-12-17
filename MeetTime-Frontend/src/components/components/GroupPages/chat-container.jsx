@@ -26,7 +26,6 @@ export function ChatContainer({ groupId, isAdmin }) {
                     />
                 </div>
             )}
-
         </div>
     );
 }

@@ -3,14 +3,14 @@ import { PaperAirplaneIcon, MegaphoneIcon, UserCircleIcon } from '@heroicons/rea
 import { useChat } from '../../../hooks/useChat'; 
 import api from '../../../config/api'; 
 import { toast } from 'react-hot-toast';
+import { ChatSkeleton } from '../GlobalComponents/chat-sekeleton';
 
 export function ChatRoom({ groupId, onOpenAnnouncements }) {
     const { chats, fetchChats, sendMessage, addLocalChat } = useChat(groupId, 'pesan');
-    
     const [input, setInput] = useState("");
     const [myId, setMyId] = useState(null);
     const [myName, setMyName] = useState("Saya"); 
-
+    const [isFirstLoad, setIsFirstLoad] = useState(true);
     const containerRef = useRef(null); 
     const inputRef = useRef(null);
 
@@ -28,15 +28,22 @@ export function ChatRoom({ groupId, onOpenAnnouncements }) {
     }, []);
 
     useEffect(() => {
-        fetchChats();
+        const initChat = async () => {
+            await fetchChats();
+            setIsFirstLoad(false);
+        };
+
+        initChat();
+        
         const interval = setInterval(fetchChats, 3000); 
         return () => clearInterval(interval);
     }, [fetchChats]);
 
     useEffect(() => {
         const container = containerRef.current;
-        if (!container) return;
 
+        if (!container) 
+            return;
         const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 150;
 
         if (isNearBottom || chats.length < 10) {
@@ -45,11 +52,10 @@ export function ChatRoom({ groupId, onOpenAnnouncements }) {
                 behavior: 'smooth'
             });
         }
-    }, [chats]); 
+    }, [chats, isFirstLoad]);
 
     const handleInputChange = (e) => {
         setInput(e.target.value);
-        
         e.target.style.height = 'auto'; 
         e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
     };
@@ -122,55 +128,57 @@ export function ChatRoom({ groupId, onOpenAnnouncements }) {
                 ref={containerRef} 
                 className="flex-1 overflow-y-auto p-4 min-h-90 max-h-90 space-y-4 custom-scrollbar scroll-smooth"
             >
-                {chats.length === 0 && (
+                {isFirstLoad ? (
+                    <ChatSkeleton />
+                ) : chats.length === 0 ? (
                     <div className="flex flex-col items-center justify-center mt-20 text-neutral/40 gap-2">
                         <div className="p-4 bg-white rounded-full shadow-sm">
                             <PaperAirplaneIcon className="size-8 opacity-50 -rotate-45 ml-1 mt-1" />
                         </div>
                         <p className="text-sm font-medium">Belum ada percakapan. Sapa temanmu!</p>
                     </div>
-                )}
-
-                {chats.map((chat) => {
-                    const isMe = chat.user_id === myId;
-                    return (
-                        <div key={chat.id} className={`flex w-full ${isMe ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`flex max-w-[85%] md:max-w-[70%] gap-2 ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
-                                {!isMe && (
-                                    <div className="shrink-0 flex flex-col justify-end pb-1">
-                                        <div className="size-8 rounded-full bg-netral-abu flex items-center justify-center text-base-100 border border-white shadow-sm">
-                                            <UserCircleIcon className="size-6" />
-                                        </div>
-                                    </div>
-                                )}
-
-                                <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
+                ) : (
+                    chats.map((chat) => {
+                        const isMe = chat.user_id === myId;
+                        return (
+                            <div key={chat.id} className={`flex w-full ${isMe ? 'justify-end' : 'justify-start'}`}>
+                                <div className={`flex max-w-[85%] md:max-w-[70%] gap-2 ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
                                     {!isMe && (
-                                        <span className="text-[10px] text-neutral/60 ml-1 mb-1 font-bold truncate max-w-[150px]">
-                                            {chat.nama_pengirim}
-                                        </span>
+                                        <div className="shrink-0 flex flex-col justify-end pb-1">
+                                            <div className="size-8 rounded-full bg-netral-abu flex items-center justify-center text-base-100 border border-white shadow-sm">
+                                                <UserCircleIcon className="size-6" />
+                                            </div>
+                                        </div>
                                     )}
 
-                                    <div className={`
-                                        relative px-4 py-2 text-sm shadow-sm
-                                        ${isMe 
-                                            ? 'bg-primary text-white rounded-2xl rounded-tr-none'
-                                            : 'bg-white text-custom-text border border-base-200 rounded-2xl rounded-tl-none'
-                                        }
-                                    `}>
-                                        <p className="leading-relaxed whitespace-pre-wrap break-words pb-1">
-                                            {chat.pesan}
-                                        </p>
-                                        
-                                        <div className={`text-[9px] text-right mt-1 font-medium ${isMe ? 'text-white/70' : 'text-neutral/40'}`}>
-                                            {new Date(chat.created_at).toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' })}
+                                    <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
+                                        {!isMe && (
+                                            <span className="text-[10px] text-neutral/60 ml-1 mb-1 font-bold truncate max-w-[150px]">
+                                                {chat.nama_pengirim}
+                                            </span>
+                                        )}
+
+                                        <div className={`
+                                            relative px-4 py-2 text-sm shadow-sm
+                                            ${isMe 
+                                                ? 'bg-primary text-white rounded-2xl rounded-tr-none'
+                                                : 'bg-white text-custom-text border border-base-200 rounded-2xl rounded-tl-none'
+                                            }
+                                        `}>
+                                            <p className="leading-relaxed whitespace-pre-wrap break-words pb-1">
+                                                {chat.pesan}
+                                            </p>
+                                            
+                                            <div className={`text-[9px] text-right mt-1 font-medium ${isMe ? 'text-white/70' : 'text-neutral/40'}`}>
+                                                {new Date(chat.created_at).toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' })}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })
+                )}
             </div>
 
             <div className="p-3 md:p-4 bg-white border-t border-base-200">

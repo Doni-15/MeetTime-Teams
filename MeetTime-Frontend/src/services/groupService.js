@@ -46,5 +46,10 @@ export const groupService = {
     getSchedules: async (groupId) => {
         const response = await api.get(`${GROUP_API_BASE}/${groupId}/schedules`);
         return response.data;
-    }
+    },
+
+    leave: async (groupId) => {
+        const response = await api.post(`${GROUP_API_BASE}/${groupId}/leave`);
+        return response.data;
+    },
 };

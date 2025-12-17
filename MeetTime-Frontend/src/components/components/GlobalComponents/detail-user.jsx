@@ -1,21 +1,20 @@
 import { SignOut } from "./SignOut";
 
-export function DetailUser({ user, setUser, isOpen }) {
+export function DetailUser({ user, setUser, isOpen, onClose }) {
     const initial = user?.name ? user.name.charAt(0).toUpperCase() : "U";
 
     return (
         <>
             {isOpen && 
-                <div className="fixed inset-0 z-40 bg-transparent" onClick={() => null}>
-                </div>
+                <div 
+                    className="fixed inset-0 z-[9998] bg-transparent" 
+                    onClick={onClose}
+                ></div>
             }
 
             <div className={`
-                fixed z-50 w-72 bg-white rounded-2xl shadow-2xl border border-gray-200
-                /* Positioning */
+                fixed z-[9999] w-72 bg-white rounded-2xl shadow-2xl border border-gray-200 
                 top-[90px] right-4 md:right-8
-                
-                /* Animation Classes */
                 transition-all duration-300 ease-cubic-bezier(0.4, 0, 0.2, 1) origin-top-right
                 ${isOpen
                     ? "opacity-100 scale-100 translate-y-0 visible"

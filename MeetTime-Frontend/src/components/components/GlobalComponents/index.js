@@ -6,9 +6,14 @@ import { SignOut } from "./SignOut"
 import Header from "./header"
 import MainLayout from "./main"
 import Footer from "./footer"
-import { NotificationList } from "./NotificationDropdown"
+import { GroupSkeleton } from "./group-sekeleton"
+import { JadwalSkeleton } from "./jadwal-sekeleton"
+import { DashboardSkeleton } from "./dashboard-sekeleton"
+import { ListGroupSkeleton } from "./list-group-sekeleton"
+import { ChatSkeleton } from "./chat-sekeleton"
+import { AnnouncementSkeleton } from "./pengumuman-sekeleton"
 
 export {
     InputBox, Header, DetailUser, Footer, KembaliDashboard, SelectBox, TextAreaBox, SignOut, MainLayout,
-    NotificationList
+    GroupSkeleton, JadwalSkeleton, DashboardSkeleton, ListGroupSkeleton, ChatSkeleton, AnnouncementSkeleton
 }

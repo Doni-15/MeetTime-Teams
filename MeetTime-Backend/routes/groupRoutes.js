@@ -16,5 +16,6 @@ router.get("/:groupId/schedules", groupController.getGroupSchedules);
 router.delete("/:groupId/members/:targetUserId", groupController.removeMember);
 router.post("/:groupId/members", groupController.addMemberManual);
 router.delete("/:groupId", groupController.deleteGroup);
+router.post('/:groupId/leave', groupController.leaveGroup);
 
 export default router;

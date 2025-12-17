@@ -151,7 +151,6 @@ export async function kickMember({ groupId, adminId, targetUserId }) {
     }
 }
 
-
 export async function addMemberByNim({ groupId, adminId, targetNim }) {
     const client = await pool.connect();
     try {
@@ -242,7 +241,6 @@ export async function getGroupCombinedSchedules(groupId) {
         WITH GroupUsers AS (
             SELECT user_id FROM GroupMembers WHERE group_id = $1
         )
-        -- 1. Ambil Jadwal Kuliah (KRS)
         SELECT 
             m.user_id,
             u.name as nama_user,
@@ -256,7 +254,6 @@ export async function getGroupCombinedSchedules(groupId) {
 
         UNION ALL
 
-        -- 2. Ambil Agenda Dinamis
         SELECT 
             k.user_id,
             u.name as nama_user,
@@ -271,4 +268,37 @@ export async function getGroupCombinedSchedules(groupId) {
 
     const result = await pool.query(query, [groupId]);
     return result.rows;
+}
+
+export async function leaveGroup({ groupId, userId }) {
+    const client = await pool.connect();
+    try {
+        const checkQuery = `
+            SELECT role FROM GroupMembers 
+            WHERE group_id = $1 AND user_id = $2
+        `;
+        const checkRes = await client.query(checkQuery, [groupId, userId]);
+
+        if (checkRes.rows.length === 0) {
+            throw new Error("Anda bukan anggota grup ini");
+        }
+
+        const role = checkRes.rows[0].role;
+
+        if (role === 'admin') {
+            throw new Error("Admin tidak dapat keluar grup. Silakan bubarkan grup jika ingin menghapusnya.");
+        }
+
+        const deleteQuery = `
+            DELETE FROM GroupMembers 
+            WHERE group_id = $1 AND user_id = $2
+            RETURNING *
+        `;
+        const res = await client.query(deleteQuery, [groupId, userId]);
+
+        return res.rows[0];
+    } 
+    finally {
+        client.release();
+    }
 }

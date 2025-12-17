@@ -1,11 +1,18 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { CalendarDaysIcon, PlusIcon, MagnifyingGlassIcon, TrashIcon, UserGroupIcon } from '@heroicons/react/24/outline'; // Ganti ke Outline biar konsisten
+import { 
+    CalendarDaysIcon, 
+    PlusIcon, 
+    MagnifyingGlassIcon, 
+    TrashIcon, 
+    UserGroupIcon, 
+    ArrowLeftOnRectangleIcon 
+} from '@heroicons/react/24/outline'; 
 
 import { useGroup } from '../../hooks/useGroup';
 import { useDebounce } from '../../hooks/useDebounce';
 
-import { KembaliDashboard } from '../../components/components/GlobalComponents';
+import { KembaliDashboard, GroupSkeleton } from '../../components/components/GlobalComponents';
 import { GroupTabs, MemberCard, ChatContainer } from '../../components/components/GroupPages';
 
 export function GroupsPages() {
@@ -19,11 +26,11 @@ export function GroupsPages() {
         myGroups, 
         kickMember,
         deleteGroup,
+        leaveGroup,
         loading 
     } = useGroup();
 
     const [activeTab, setActiveTab] = useState('anggota');
-    
     const [searchQuery, setSearchQuery] = useState("");
     const debouncedSearch = useDebounce(searchQuery, 500);
 
@@ -38,9 +45,8 @@ export function GroupsPages() {
         return myGroups.find(g => g.id === groupId);
     }, [myGroups, groupId]);
 
-    const namaGrup = currentGroup ? currentGroup.nama_group : "Memuat...";
-    const deskripsi = currentGroup ? currentGroup.deskripsi : "Sedang mengambil data grup...";
     const isAdmin = currentGroup?.role === 'admin';
+    const inviteCode = currentGroup?.kode_undangan;
 
     const filteredMembers = useMemo(() => {
         return groupMembers.filter(member => {
@@ -56,18 +62,40 @@ export function GroupsPages() {
         deleteGroup(groupId, navigate);
     };
 
+    const handleLeaveGroup = () => {
+        leaveGroup(groupId, navigate);
+    };
+
+    if (!currentGroup) {
+        return (
+            <div className="w-full max-w-6xl mx-auto p-4 md:p-6 flex flex-col gap-6">
+                <div className="flex flex-col gap-2 animate-pulse">
+                     <div className="h-4 w-24 bg-base-300 rounded opacity-50"></div>
+                     <div className="h-8 w-64 bg-base-300 rounded opacity-50"></div>
+                </div>
+                <div className="flex-1 min-h-[600px]">
+                    <GroupSkeleton />
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="w-full max-w-6xl mx-auto flex flex-col gap-6 pb-10">
             <div className="flex flex-col gap-2">
                 <KembaliDashboard 
-                    judul={namaGrup} 
-                    keterangan={deskripsi}
+                    judul={currentGroup.nama_group} 
+                    keterangan={currentGroup.deskripsi}
                 />
             </div>
 
             <section className="bg-netral-putih rounded-3xl shadow-xl border border-base-200 overflow-hidden flex flex-col min-h-[600px] relative">
                 <div className="border-b border-base-200 bg-white px-6 pt-6">
-                   <GroupTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+                   <GroupTabs 
+                        activeTab={activeTab} 
+                        setActiveTab={setActiveTab} 
+                        inviteCode={inviteCode}
+                    />
                 </div>
                 
                 <div className="flex-1 flex flex-col relative bg-base-400/10">
@@ -87,8 +115,8 @@ export function GroupsPages() {
                                     />
                                 </div>
 
-                                {isAdmin && (
-                                    <div className="flex gap-3 w-full md:w-auto justify-end">
+                                <div className="flex gap-3 w-full md:w-auto justify-end">
+                                    {isAdmin && (
                                         <button
                                             onClick={handleDeleteGroup}
                                             className="px-4 py-2.5 bg-error/10 text-error hover:bg-error hover:text-white rounded-xl font-bold text-sm flex items-center gap-2 transition-all active:scale-95"
@@ -97,7 +125,20 @@ export function GroupsPages() {
                                             <TrashIcon className="size-5" />
                                             <span className="hidden sm:inline">Bubarkan</span>
                                         </button>
+                                    )}
 
+                                    {!isAdmin && (
+                                        <button
+                                            onClick={handleLeaveGroup}
+                                            className="px-4 py-2.5 bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200 rounded-xl font-bold text-sm flex items-center gap-2 transition-all active:scale-95 hover:text-error hover:border-error/20 hover:bg-error/5"
+                                            title="Keluar dari Grup"
+                                        >
+                                            <ArrowLeftOnRectangleIcon className="size-5" />
+                                            <span className="hidden sm:inline">Keluar</span>
+                                        </button>
+                                    )}
+
+                                    {isAdmin && ( 
                                         <button
                                             onClick={() => navigate(`/groups/${groupId}/add-member`)}
                                             className="px-5 py-2.5 bg-primary text-white hover:bg-primary/90 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg shadow-primary/20 transition-all active:scale-95"
@@ -105,16 +146,13 @@ export function GroupsPages() {
                                             <PlusIcon className="size-5" />
                                             <span>Undang</span>
                                         </button>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
                             </div>
 
                             <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
                                 {loading ? (
-                                    <div className="flex flex-col items-center justify-center h-64 text-neutral/40">
-                                        <span className="loading loading-spinner loading-md mb-3"></span>
-                                        <p>Memuat data anggota...</p>
-                                    </div>
+                                    <GroupSkeleton />
                                 ) : groupMembers.length === 0 ? (
                                     <div className="flex flex-col items-center justify-center h-64 text-neutral/40 border-2 border-dashed border-base-200 rounded-2xl">
                                         <UserGroupIcon className="size-10 mb-2 opacity-30"/>

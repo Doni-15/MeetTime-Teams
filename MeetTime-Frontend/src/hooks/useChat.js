@@ -12,9 +12,10 @@ export function useChat(groupId, jenisPesan = 'pesan') {
         try {
             const res = await chatService.getChats(groupId, jenisPesan);
             setChats(res.data || []);
-        } catch (err) {
-            console.error("Gagal mengambil chat:", err);
-        } finally {
+        } 
+        catch (err) {
+        } 
+        finally {
             setLoading(false);
         }
     }, [groupId, jenisPesan]);
