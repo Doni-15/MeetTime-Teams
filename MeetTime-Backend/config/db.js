@@ -1,19 +1,45 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
+import fs from 'node:fs';
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 const { Pool } = pg;
 
 const isProduction = process.env.NODE_ENV === 'production';
 const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
 
+function getCertificateAuthority() {
+    if (process.env.DB_SSL_CA?.trim()) {
+        return process.env.DB_SSL_CA.replace(/\\n/g, '\n');
+    }
+
+    if (process.env.DB_SSL_CA_FILE?.trim()) {
+        return fs.readFileSync(process.env.DB_SSL_CA_FILE, 'utf8');
+    }
+
+    return undefined;
+}
+
+function getSslConfig() {
+    const sslEnabled = isProduction || process.env.DB_SSL === 'true';
+
+    if (!sslEnabled) {
+        return false;
+    }
+
+    const ca = getCertificateAuthority();
+
+    return {
+        rejectUnauthorized: true,
+        ...(ca ? { ca } : {}),
+    };
+}
+
 const dbConfig = connectionString
     ? {
         connectionString: connectionString,
-        ssl: {
-            rejectUnauthorized: false,
-        },
+        ssl: getSslConfig(),
     }
     : {
         host: process.env.DB_HOST,
@@ -21,18 +47,13 @@ const dbConfig = connectionString
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
         port: process.env.DB_PORT,
-        ssl: false, 
+        ssl: getSslConfig(),
     };
 
 const pool = new Pool(dbConfig);
 
-pool.connect((err) => {
-    if (err) {
-        console.error('Koneksi Database Gagal:', err.message);
-    } 
-    else {
-        console.log(`Terhubung ke Database (${isProduction ? 'Cloud/Railway' : 'Lokal'})`);
-    }
-});
+export async function verifyDatabaseConnection() {
+    await pool.query('SELECT 1');
+}
 
 export default pool;

@@ -7,7 +7,7 @@ export async function protect(req, res, next) {
         const token = req.cookies.token;
 
         if (!token) {
-            return res.status(401).json({ message: 'Not authorized, no token' });
+            return res.status(401).json({ message: 'Autentikasi diperlukan' });
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -18,7 +18,7 @@ export async function protect(req, res, next) {
         );
 
         if (user.rows.length === 0) {
-            return res.status(401).json({ message: 'User not found' });
+            return res.status(401).json({ message: 'Autentikasi diperlukan' });
         }
 
         req.user = user.rows[0];
@@ -26,7 +26,6 @@ export async function protect(req, res, next) {
 
     } 
     catch (error) {
-        console.error("JWT Error:", error.message);
-        res.status(401).json({ message: 'Not authorized, token failed' });
+        res.status(401).json({ message: 'Autentikasi diperlukan' });
     }
 }

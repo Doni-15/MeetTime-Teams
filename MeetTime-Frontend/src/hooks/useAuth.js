@@ -72,8 +72,10 @@ export function useAuth() {
             await authService.logout();
             toast.success("Logout berhasil!", { id: loadingToast });
         } 
-        catch (err) {
-            toast.success("Logout berhasil!", { id: loadingToast });
+        catch {
+            toast.error('Sesi lokal ditutup, tetapi logout server tidak dapat dikonfirmasi.', {
+                id: loadingToast,
+            });
         } 
         finally {
             setLoading(false);

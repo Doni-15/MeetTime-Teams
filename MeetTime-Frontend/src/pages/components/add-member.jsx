@@ -29,11 +29,11 @@ export function AddMemberGrup() {
 
     useEffect(() => {
         if (debouncedNim) {
-            searchCandidate(debouncedNim);
+            searchCandidate(groupId, debouncedNim);
         } else {
             clearSearch();
         }
-    }, [debouncedNim]);
+    }, [groupId, debouncedNim, searchCandidate, clearSearch]);
 
     const sortedResults = useMemo(() => {
         if (!searchResults) return [];

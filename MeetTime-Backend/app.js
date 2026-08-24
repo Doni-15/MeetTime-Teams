@@ -1,7 +1,7 @@
 import express from 'express';
-import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import { getClientOrigin, getTrustProxyHops } from './config/runtime.js';
 
 import authRoutes from './routes/authRoutes.js';
 import krsRoutes from './routes/krsRoutes.js';
@@ -9,18 +9,17 @@ import agendaRoutes from './routes/agendaRoutes.js';
 import groupRoutes from './routes/groupRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 
-dotenv.config();
 const app = express();
 
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: getClientOrigin(),
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 
-app.set('trust proxy', 1);
+app.set('trust proxy', getTrustProxyHops());
 
-app.use(express.json()); 
+app.use(express.json({ limit: '100kb' }));
 app.use(cookieParser());
 
 app.use('/auth', authRoutes);
@@ -37,10 +36,13 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
     const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+    const isProduction = process.env.NODE_ENV === 'production';
     
     res.status(statusCode).json({
-        message: err.message,
-        stack: process.env.NODE_ENV === 'production' ? null : err.stack,
+        message: isProduction && statusCode >= 500
+            ? 'Terjadi kesalahan pada server'
+            : err.message,
+        stack: isProduction ? undefined : err.stack,
     });
 });
 

@@ -16,7 +16,7 @@ export function useAgenda() {
             setDaftarAgenda(data);
             setError(null);
         } 
-        catch (err) {
+        catch {
             setError('Gagal memuat data agenda');
         } 
         finally {
@@ -28,7 +28,8 @@ export function useAgenda() {
         try {
             const data = await agendaService.getHistory();
             setDeletedHistory(data);
-        } catch (err) {
+        } catch {
+            setDeletedHistory([]);
         }
     }, []);
 
@@ -88,7 +89,7 @@ export function useAgenda() {
                 id: loadingToast,
             });
         }
-        catch (err) {
+        catch {
             toast.error('Gagal menghapus agenda', {
                 id: loadingToast,
             });

@@ -1,21 +1,24 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { toast } from 'react-hot-toast';
 import { chatService } from '@/services/chatService';
 
 export function useChat(groupId, jenisPesan = 'pesan') {
     const [chats, setChats] = useState([]);
     const [loading, setLoading] = useState(false);
+    const hasLoaded = useRef(false);
 
     const fetchChats = useCallback(async () => {
-        if (chats.length === 0) setLoading(true); 
+        if (!hasLoaded.current) setLoading(true);
         
         try {
             const res = await chatService.getChats(groupId, jenisPesan);
             setChats(res.data || []);
         } 
-        catch (err) {
+        catch {
+            // Polling berikutnya akan mencoba kembali tanpa menghapus chat yang sudah ada.
         } 
         finally {
+            hasLoaded.current = true;
             setLoading(false);
         }
     }, [groupId, jenisPesan]);

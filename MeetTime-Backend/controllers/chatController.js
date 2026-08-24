@@ -5,18 +5,27 @@ export async function sendMessage(req, res) {
         const { groupId } = req.params;
         const { pesan, jenis } = req.body;
         const userId = req.user.id;
+        const jenisPesan = jenis || 'pesan';
 
-        if (!pesan) {
+        if (!pesan?.trim()) {
             return res.status(400).json({ 
                 message: "Pesan tidak boleh kosong" 
             });
         }
 
+        if (pesan.length > 2000) {
+            return res.status(400).json({ message: 'Pesan terlalu panjang' });
+        }
+
+        if (!['pesan', 'pengumuman'].includes(jenisPesan)) {
+            return res.status(400).json({ message: 'Jenis pesan tidak valid' });
+        }
+
         const newChat = await chatService.kirimPesan({
             groupId,
             userId,
-            pesan,
-            jenisPesan: jenis || 'pesan'
+            pesan: pesan.trim(),
+            jenisPesan
         });
 
         res.status(201).json({
@@ -42,6 +51,10 @@ export async function getMessages(req, res) {
         const { groupId } = req.params;
         const { jenis } = req.query; 
         const targetJenis = jenis || 'pesan';
+
+        if (!['pesan', 'pengumuman'].includes(targetJenis)) {
+            return res.status(400).json({ message: 'Jenis pesan tidak valid' });
+        }
 
         const chats = await chatService.ambilPesan({
             groupId,

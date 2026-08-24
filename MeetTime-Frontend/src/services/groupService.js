@@ -33,8 +33,10 @@ export const groupService = {
         return response.data;
     },
 
-    searchUser: async (keyword) => {
-        const response = await api.get(`${GROUP_API_BASE}/cari-member?q=${keyword}`);
+    searchUser: async (groupId, keyword) => {
+        const response = await api.get(`${GROUP_API_BASE}/${groupId}/candidates`, {
+            params: { q: keyword },
+        });
         return response.data;
     },
 

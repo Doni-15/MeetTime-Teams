@@ -41,7 +41,7 @@ export function ListGroup() {
                 setIsModalOpen(false);
                 toast.success("Berhasil bergabung ke grup!");
             }
-        } catch (err) {
+        } catch {
             toast.error("Gagal bergabung. Cek kode undangan.");
         } finally {
             setIsJoining(false);
