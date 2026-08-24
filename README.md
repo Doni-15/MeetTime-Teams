@@ -81,6 +81,7 @@ npm run build
 - operasi pengelolaan anggota dan penghapusan grup memerlukan hak admin;
 - akses ke grup yang bukan milik pengguna menghasilkan respons generik agar keberadaan resource privat tidak bocor;
 - login dan registrasi memiliki rate limit per alamat jaringan tanpa lockout permanen;
+- request yang memakai cookie autentikasi pada method perubahan data wajib berasal dari origin frontend yang dikonfigurasi;
 - koneksi database production memverifikasi sertifikat TLS dan mendukung CA dari environment atau file;
 - secret production wajib diberikan saat runtime dan tidak memiliki fallback source-controlled.
 

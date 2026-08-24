@@ -2,6 +2,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { getClientOrigin, getTrustProxyHops } from './config/runtime.js';
+import { requireTrustedCookieOrigin } from './middleware/csrfOrigin.js';
 
 import authRoutes from './routes/authRoutes.js';
 import krsRoutes from './routes/krsRoutes.js';
@@ -21,6 +22,7 @@ app.set('trust proxy', getTrustProxyHops());
 
 app.use(express.json({ limit: '100kb' }));
 app.use(cookieParser());
+app.use(requireTrustedCookieOrigin);
 
 app.use('/auth', authRoutes);
 app.use('/krs', krsRoutes);
