@@ -1,5 +1,3 @@
--- Active: 1762329389992@@127.0.0.1@5432@MeetTime-Group
-
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- ini untuk user
@@ -32,8 +30,10 @@ CREATE TABLE KegiatanDinamis(
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     nama_kegiatan VARCHAR(100) NOT NULL,
     nama_hari VARCHAR(10) NOT NULL,
+    tanggal DATE NOT NULL,
     waktu_mulai TIME NOT NULL,
     waktu_selesai TIME NOT NULL,
+    deleted_at TIMESTAMP,
 
     user_id UUID NOT NULL,
     CONSTRAINT fk_user
@@ -100,9 +100,3 @@ CREATE TABLE ChatGroups(
         REFERENCES Users(id)
         ON DELETE CASCADE
 );
-DROP TABLE ChatGroups;
-DROP TABLE Users;
-DROP TABLE Groups;
-DROP TABLE KegiatanDinamis;
-DROP TABLE MataKuliah;
-DROP TABLE GroupMembers;

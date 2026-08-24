@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { LogoBesar } from "../../../assets";
 import { DetailUser } from "./detail-user";
 

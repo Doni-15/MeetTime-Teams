@@ -4,7 +4,7 @@ import { useChat } from '../../../hooks/useChat';
 import { AnnouncementSkeleton } from '../GlobalComponents';
 
 export function PengumumanGrup({ groupId, isAdmin, onBackToChat }) {
-    const { chats, loading, fetchChats, sendMessage } = useChat(groupId, 'pengumuman');
+    const { chats, fetchChats, sendMessage } = useChat(groupId, 'pengumuman');
     const [input, setInput] = useState("");
     const [isFirstLoad, setIsFirstLoad] = useState(true);
 

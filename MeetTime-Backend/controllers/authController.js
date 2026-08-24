@@ -22,6 +22,12 @@ export async function register(req, res) {
             return res.status(400).json({ message: "Semua kolom wajib diisi" });
         }
 
+        if (String(password).length < 8) {
+            return res.status(400).json({
+                message: 'Password minimal 8 karakter',
+            });
+        }
+
         const user = await authService.registerUser({ name, jurusan, nim, password });
 
         res.status(201).json({
@@ -31,7 +37,9 @@ export async function register(req, res) {
 
     } 
     catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(400).json({
+            message: 'Registrasi tidak dapat diproses dengan data tersebut',
+        });
     }
 };
 
@@ -41,7 +49,7 @@ export async function login(req, res) {
         const { nim, password } = req.body;
 
         if (!nim || !password) {
-            return res.status(400).json({ message: "NIM dan Password wajib diisi" });
+            return res.status(400).json({ message: "NIM dan password wajib diisi" });
         }
 
         const user = await authService.loginUser(nim, password);
@@ -55,7 +63,7 @@ export async function login(req, res) {
         });
 
     } catch (error) {
-        res.status(401).json({ message: error.message });
+        res.status(401).json({ message: 'NIM atau password tidak valid' });
     }
 };
 

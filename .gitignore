@@ -1,0 +1,20 @@
+# Environment dan credential
+.env
+.env.*
+!.env.example
+
+# Dependency
+node_modules/
+
+# Build, test, dan log
+dist/
+build/
+coverage/
+*.log
+npm-debug.log*
+
+# Editor dan OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

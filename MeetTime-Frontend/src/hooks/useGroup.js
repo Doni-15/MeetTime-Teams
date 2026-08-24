@@ -16,7 +16,7 @@ export function useGroup() {
             const response = await groupService.getMyGroups();
             setMyGroups(response.groups || response); 
             setError(null);
-        } catch (err) {
+        } catch {
             setError('Gagal memuat daftar grup');
         } finally {
             setLoading(false);
@@ -28,7 +28,8 @@ export function useGroup() {
         try {
             const response = await groupService.getMembers(groupId);
             setGroupMembers(response.members || response);
-        } catch (err) {
+        } catch {
+            setGroupMembers([]);
         } finally {
             setLoading(false);
         }
@@ -113,13 +114,13 @@ export function useGroup() {
         }
     };
 
-    const searchCandidate = async (keyword) => {
+    const searchCandidate = useCallback(async (groupId, keyword) => {
         if (!keyword) {
             setSearchResults([]); 
             return;
         }
         try {
-            const response = await groupService.searchUser(keyword);
+            const response = await groupService.searchUser(groupId, keyword);
             
             if (Array.isArray(response)) {
                 setSearchResults(response);
@@ -138,7 +139,7 @@ export function useGroup() {
             console.error("Gagal mencari user", err);
             setSearchResults([]);
         }
-    };
+    }, []);
 
     const deleteGroup = async (groupId, navigate) => {
         const result = await Swal.fire({
@@ -163,7 +164,7 @@ export function useGroup() {
             navigate('/pages/dashboard'); 
         } 
         catch (err) {
-            const msg = "Gagal menghapus grup";
+            const msg = err.response?.data?.message || "Gagal menghapus grup";
             toast.error(msg, { id: loadingToast });
         } 
         finally {
@@ -204,7 +205,7 @@ export function useGroup() {
         }
     };
 
-    const clearSearch = () => setSearchResults([]);
+    const clearSearch = useCallback(() => setSearchResults([]), []);
 
     useEffect(() => {
         fetchMyGroups();

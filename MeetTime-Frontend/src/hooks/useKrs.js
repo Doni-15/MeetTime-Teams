@@ -15,7 +15,7 @@ export function useKrs() {
             setDaftarKrs(data);
             setError(null);
         } 
-        catch (err) {
+        catch {
             setError("Gagal memuat data KRS");
         } 
         finally {
@@ -79,7 +79,7 @@ export function useKrs() {
                 id: loadingToast,
             });
         } 
-        catch (err) {
+        catch {
             toast.error("Gagal menghapus", {
                 id: loadingToast,
             });

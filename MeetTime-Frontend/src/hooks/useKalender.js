@@ -20,7 +20,9 @@ export function useKalender(groupId) {
                     setScheduleData(res.schedules || []);
                     setTotalMembers(res.total_members || 0);
                 } 
-                catch (err) {
+                catch {
+                    setScheduleData([]);
+                    setTotalMembers(0);
                 } 
                 finally {
                     setLoading(false);
